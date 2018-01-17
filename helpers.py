@@ -9,3 +9,7 @@ def follow()
 "deze functie zorgt ervoor dat een user mensen kan volgen"
 def unfollow()
 "deze functie zorgt ervoor dat een user mensen kan onvolgen"
+def comment()
+"deze functie zorgt ervoor dat een user comments kan toevoegen"
+def report()
+"deze fucntie zorgt ervoor dat een user een andere user kan reporten"

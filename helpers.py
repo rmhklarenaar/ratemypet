@@ -13,3 +13,5 @@ def comment()
 "deze functie zorgt ervoor dat een user comments kan toevoegen"
 def report()
 "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
+def sorteer()
+"deze functie zorgt ervoor dat een user zijn feed kan sorteren"

@@ -1,6 +1,6 @@
 # Webprogrammeren Informatiekunde
 
-###Werkgroep IK21
+### Werkgroep IK21
 
 Winston Lam,
 Raphaël Koning,
@@ -16,7 +16,7 @@ De ranking is op een schaal van één tot vijf, deze . Eveneens komt er bij elke
 ## Schetsen
 > Zie slack of GitHub
 
-##Features
+## Features
 
 > Gebruikers kunnen publieke foto’s posten met of zonder begeleidende tekst.
 Gebruikers kunnen posts van andere beoordelen waardoor de gemiddelde score van de post veranderd.

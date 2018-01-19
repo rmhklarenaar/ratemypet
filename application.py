@@ -88,12 +88,7 @@ def register():
             return apology("passwords must match")
 
         # add user to database
-        hash = pwd_context.hash(request.form.get("password"))
-        result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"),hash=hash)
 
-        # ensure that username is not already in use
-        if not result:
-            return apology("username already in use")
 
         # querry database for username
         rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))

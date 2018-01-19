@@ -30,6 +30,8 @@ def login_required(f):
 
 def post():
 
+
+
 def rate():
 "deze functie zorgt ervoor dat een user foto's kan raten"
 def follow():

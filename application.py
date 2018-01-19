@@ -67,7 +67,6 @@ def login():
 
 
 
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     "HIER REGRISTREERT DE USER HET ACCOUNT"
@@ -88,10 +87,10 @@ def register():
             return apology("passwords must match")
 
         # add user to database
-
+        add_user()
 
         # querry database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        rows = select_username()
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
@@ -123,11 +122,14 @@ def logout():
 @login_required
 def index():
     "TODO"
+    rate()
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
     "HIER KAN DE USER ANDERE ACCOUNTS OPZOEKEN"
-    "TODO"
+    if not request.form.get("search"):
+            return apology("must provide username")
+
 
 
 

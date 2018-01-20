@@ -71,7 +71,7 @@ def login():
 def register():
     "HIER REGRISTREERT DE USER HET ACCOUNT"
      # if user reached route via POST (as by submitting a form via POST)
-     if request.method == "POST":
+    if request.method == "POST":
 
         # ensure username was submitted
         if not request.form.get("username"):

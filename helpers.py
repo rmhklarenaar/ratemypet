@@ -1,11 +1,16 @@
 import csv
 import urllib.request
 
-from flask import redirect, render_template, request, session
+from cs50 import SQL
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+from passlib.apps import custom_app_context as pwd_context
 from functools import wraps
 
-def apology():
-"returned een excuus als de user een veld leeg of niet correct invult"
+# configure CS50 Library to use SQLite database
+db = SQL("sqlite:///finance.db")
+
+def apology(message, code=400):
+    "returned een excuus als de user een veld leeg of niet correct invult"
     def escape(s):
         """
         Escape special characters.
@@ -29,8 +34,7 @@ def login_required(f):
     return decorated_function
 
 def add_user():
-    hash = pwd_context.hash(request.form.get("password"))
-    result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"),hash=hash)
+    result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
 
     # ensure that username is not already in use
     if not result:
@@ -40,8 +44,7 @@ def add_user():
 
 def post():
     "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
-
-
+    return apology("pagina is nog niet af")
 
 def rate():
     pictures = db.execute("SELECT * FROM photo")
@@ -62,12 +65,17 @@ def rate():
                         , rating = new_rating, photo_id = photo_id)
 
 def follow():
-"deze functie zorgt ervoor dat een user mensen kan volgen"
+    "deze functie zorgt ervoor dat een user mensen kan volgen"
+    return apology("pagina is nog niet af")
 def unfollow():
-"deze functie zorgt ervoor dat een user mensen kan onvolgen"
+    "deze functie zorgt ervoor dat een user mensen kan onvolgen"
+    return apology("pagina is nog niet af")
 def comment():
-"deze functie zorgt ervoor dat een user comments kan toevoegen"
+    "deze functie zorgt ervoor dat een user comments kan toevoegen"
+    return apology("pagina is nog niet af")
 def report():
-"deze fucntie zorgt ervoor dat een user een andere user kan reporten"
+    "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
+    return apology("pagina is nog niet af")
 def sorteer():
-"deze functie zorgt ervoor dat een user zijn feed kan sorteren"
+    "deze functie zorgt ervoor dat een user zijn feed kan sorteren"
+    return apology("pagina is nog niet af")

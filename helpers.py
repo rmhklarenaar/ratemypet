@@ -1,5 +1,6 @@
 import csv
 import urllib.request
+import random
 
 from functools import wraps
 from cs50 import SQL
@@ -30,7 +31,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # configure CS50 Library to use SQLite database
-db = SQL("sqlite:///website.db")
+db = SQL("sqlite:///database.db")
 
 def apology(message, code=400):
     "returned een excuus als de user een veld leeg of niet correct invult"
@@ -75,6 +76,9 @@ def post():
 def rate():
     pictures = db.execute("SELECT * FROM photo")
     picture_amount = len(pictures)
+
+    if(picture_amount == 0):
+        return apology("er zijn geen foto's beschikbaar.")
     random_int = random.randint(1, picture_amount)
 
     photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = random_int)

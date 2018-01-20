@@ -26,7 +26,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # configure CS50 Library to use SQLite database
-db = SQL("sqlite:///website.db")
+db = SQL("sqlite:///database.db")
 "GEEN IDEE WAT DIT STUK HIERONDER DOET (EINDE)"
 
 

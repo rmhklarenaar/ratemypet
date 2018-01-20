@@ -104,6 +104,8 @@ def register():
     else:
         return render_template("register.html")
 
+def quote():
+    return apology("pagina bestaat niet")
 
 
 @app.route("/logout")
@@ -122,6 +124,7 @@ def logout():
 def index():
     "TODO"
     rate()
+    return render_template('index.html')
 
 @app.route("/search", methods=["GET", "POST"])
 def search():

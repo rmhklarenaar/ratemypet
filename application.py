@@ -85,15 +85,15 @@ def register():
         elif request.form.get("password_check") != request.form.get("password"):
             return apology("passwords must match")
 
-        # add user to database
-        add_user()
-
         # querry database for username
         rows = select_username()
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
             return apology("invalid username and/or password")
+
+        # add user to database
+        add_user()
 
         session["user_id"] = rows[0]["id"]
 

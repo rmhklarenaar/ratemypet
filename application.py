@@ -58,7 +58,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return render_template("index.html")
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -98,7 +98,7 @@ def register():
         session["user_id"] = rows[0]["id"]
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return render_template("index.html")
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -119,10 +119,14 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
+
     if request.method == "POST":
+
+        rating = 0
+
         if(request.form.get("rate1")):
             rating = 1
         elif(request.form.get("rate2")):
@@ -131,15 +135,14 @@ def index():
             rating = 3
         elif(request.form.get("rate4")):
             rating = 4
-        else:
+        elif(request.form.get("rate5")):
             rating = 5
+
 
         rate(rating)
 
-        return render_template('index.html')
-
+        return render_template("index.html")
     else:
-        return redirect(url_for("index"))
-
+        return render_template("index.html")
 
 

@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block main %}
+    <form action="{{ url_for('index') }}" method="post">
+        <img src="~/workspace/ratemypet/uploads/0.jpg"/> <br/>
 
-    <img src="~/workspace/ratemypet/uploads/0.jpg"/> <br/>
-
-    <button class="btn btn-default" type="submit" name="rate1">1</button>
-    <button class="btn btn-default" type="submit" name="rate2">2</button>
-    <button class="btn btn-default" type="submit" name="rate3">3</button>
-    <button class="btn btn-default" type="submit" name="rate4">4</button>
-    <button class="btn btn-default" type="submit" name="rate5">5</button>
-
+        <button class="btn btn-default" type="submit" name="rate1">1</button>
+        <button class="btn btn-default" type="submit" name="rate2">2</button>
+        <button class="btn btn-default" type="submit" name="rate3">3</button>
+        <button class="btn btn-default" type="submit" name="rate4">4</button>
+        <button class="btn btn-default" type="submit" name="rate5">5</button>
+    </form>
 {% endblock %}

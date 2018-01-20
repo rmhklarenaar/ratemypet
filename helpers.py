@@ -85,8 +85,7 @@ def rate(rating):
     rated_amount = photo[0]["rated"]
 
     # dit moet nog in html gezet worden
-    # rating = rating
-    rating = 3
+    rating = rating
 
     old_rating = photo[0]["rating"]
     new_rating = (old_rating * rated_amount + rating) /(rated_amount + 1)

@@ -73,7 +73,7 @@ def post():
     "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
     return apology("pagina is nog niet af")
 
-def rate():
+def rate(rating):
     pictures = db.execute("SELECT * FROM photo")
     picture_amount = len(pictures)
 
@@ -85,7 +85,7 @@ def rate():
     rated_amount = photo[0]["rated"]
 
     # dit moet nog in html gezet worden
-    # rating = request.form.get("rate")
+    # rating = rating
     rating = 3
 
     old_rating = photo[0]["rating"]

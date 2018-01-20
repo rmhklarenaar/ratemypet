@@ -122,16 +122,24 @@ def logout():
 @app.route("/")
 @login_required
 def index():
-    "TODO"
-    rate()
-    return render_template('index.html')
+    if request.method == "POST":
+        if(request.form.get("rate1")):
+            rating = 1
+        elif(request.form.get("rate2")):
+            rating = 2
+        elif(request.form.get("rate3")):
+            rating = 3
+        elif(request.form.get("rate4")):
+            rating = 4
+        else:
+            rating = 5
 
-@app.route("/search", methods=["GET", "POST"])
-def search():
-    "HIER KAN DE USER ANDERE ACCOUNTS OPZOEKEN"
-    if not request.form.get("search"):
-            return apology("must provide username")
+        rate(rating)
 
+        return render_template('index.html')
+
+    else:
+        return redirect(url_for("index"))
 
 
 

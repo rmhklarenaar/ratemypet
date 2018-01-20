@@ -29,7 +29,6 @@ Session(app)
 db = SQL("sqlite:///database.db")
 "GEEN IDEE WAT DIT STUK HIERONDER DOET (EINDE)"
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     "HIER LOGT DE USER IN"

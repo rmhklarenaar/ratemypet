@@ -82,17 +82,18 @@ def rate():
     random_int = random.randint(1, picture_amount)
 
     photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = random_int)
-    rated_amount = photo["rated"]
+    rated_amount = photo[0]["rated"]
 
     # dit moet nog in html gezet worden
-    rating = request.form.get("rate")
+    # rating = request.form.get("rate")
+    rating = 3
 
-    old_rating = photo["rating"]
+    old_rating = photo[0]["rating"]
     new_rating = (old_rating * rated_amount + rating) /(rated_amount + 1)
-    photo_id = photo["photo_id"]
+    photo_id = photo[0]["photo_id"]
 
-    return db.execute("UPDATE photo SET rating = :rating WHERE photo_id = :photo_id"
-                        , rating = new_rating, photo_id = photo_id)
+    return db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id"
+                        , rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
 
 def follow():
     "deze functie zorgt ervoor dat een user mensen kan volgen"

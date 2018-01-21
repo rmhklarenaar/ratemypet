@@ -163,3 +163,54 @@ def index():
         return render_template("index.html", photo_path = photo_path, rating = old_rating)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route("/userpage", methods=["GET", "POST"])
+@login_required
+def search_user():
+
+    if request.method == "POST":
+        if not request.form.get("search_username"):
+            return apology("must provide a username to search")
+
+        user = search()
+        user_id = user[0]["id"]
+        user_username = user[0]["username"]
+
+        if len(user) == 0:
+            return apology("user does not exist")
+
+        return render_template("userpage.html", user_id = user_id, user_username = user_username)
+
+    else:
+        return render_template("userpage.html")
+
+
+@app.route("/", methods=["GET", "POST"])
+@login_required
+def upload_image():
+
+    if request.method == "POST":
+        if not request.form.get("caption"):
+            return apology("please provide a caption")
+
+        add_photo()
+
+        return render_template("succes.html")
+
+
+
+    else:
+        return render_template("upload.html")

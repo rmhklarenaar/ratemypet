@@ -135,3 +135,14 @@ def report():
 def sorteer():
     "deze functie zorgt ervoor dat een user zijn feed kan sorteren"
     return apology("pagina is nog niet af")
+
+
+def search():
+    user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
+    return user
+
+
+def upload():
+    session["user_id"] = user_id()
+    add_photo = db.execute("INSERT INTO photo (id, photo_path) VALUES (:id, :photo_path)", id = session["user_id"], photo_path = "TODO")
+    return add_photo

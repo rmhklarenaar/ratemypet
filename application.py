@@ -129,6 +129,7 @@ def userpage():
 def index():
     picture_info = picture()
     photo_path = picture_info[0]["photo_path"]
+    old_rating = picture_info[0]["rating"]
 
     if request.method == "POST":
 
@@ -148,8 +149,8 @@ def index():
 
         rate(rating, picture_info)
 
-        return render_template("index.html", photo_path = photo_path, )
+        return render_template("index.html", photo_path = photo_path, rating = old_rating)
     else:
-        return render_template("index.html", photo_path = photo_path)
+        return render_template("index.html", photo_path = photo_path, rating = old_rating)
 
 

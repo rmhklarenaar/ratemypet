@@ -95,7 +95,6 @@ def rate(rating, picture_info):
     db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id"
                         , rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
 
-
 def picture():
     pictures = db.execute("SELECT * FROM photo")
     picture_amount = len(pictures)

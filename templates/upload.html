@@ -7,11 +7,11 @@
 {% block main %}
 
     <h1>Upload</h1>
-    <form type="file" method="post" enctype="multipart/form-data">
-		<input type="file" name="file"><br/></br>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+		<input type="file" name="photoupload" required><br/></br>
 		CAPTION:
-		<input type="text" name="caption">
-		<input type="submit" value="Submit">
+		<input type="text" name="caption" required>
+		<input type="submit" value="submit">
     </form>
 
 {% endblock %}

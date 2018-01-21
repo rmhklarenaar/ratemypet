@@ -6,13 +6,18 @@
 
 {% block main %}
 
+    <h1>{{username}}</h1>
+    <img src="{{photo_path}}" style="height: 400px; width: 400px;"/>
+    <br/>
+    <br/>
     <form action="{{ url_for('index') }}" method="post">
-        <img src="{{photo_path}}" style="height: 400px; width: 400px;"/> <br/><br/>
-
         <button class="btn btn-default" type="submit" name="rate1">1</button>
         <button class="btn btn-default" type="submit" name="rate2">2</button>
         <button class="btn btn-default" type="submit" name="rate3">3</button>
         <button class="btn btn-default" type="submit" name="rate4">4</button>
         <button class="btn btn-default" type="submit" name="rate5">5</button>
     </form>
+    <br/>
+    <p style="color: black; font-size:30px; ">{{rating}}</p>
+
 {% endblock %}

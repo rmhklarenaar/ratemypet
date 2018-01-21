@@ -115,18 +115,20 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
-@app.route("/follow", methods = ["GET", "POST"])
-def follow():
-    if request.method == "POST"
-        follow_helper()
+# @app.route("/follow", methods = ["GET", "POST"])
+# def follow():
+#     if request.method == "POST"
+#         follow_helper()
 
-        return render_template("index.html")
-    else:
-        return render_template("index.html")
+#         return render_template("index.html")
+#     else:
+#         return render_template("index.html")
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
+    picture_info = picture()
+    photo_path = picture_info[0]["photo_path"]
 
     if request.method == "POST":
 
@@ -144,10 +146,10 @@ def index():
             rating = 5
 
 
-        rate(rating)
+        rate(rating, picture_info)
 
-        return render_template("index.html")
+        return render_template("index.html", photo_path = photo_path)
     else:
-        return render_template("index.html")
+        return render_template("index.html", photo_path = photo_path)
 
 

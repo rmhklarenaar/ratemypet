@@ -80,15 +80,9 @@ def post():
     "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
     return apology("pagina is nog niet af")
 
-def rate(rating):
-    pictures = db.execute("SELECT * FROM photo")
-    picture_amount = len(pictures)
+def rate(rating, picture_info):
 
-    if(picture_amount == 0):
-        return apology("er zijn geen foto's beschikbaar.")
-    random_int = random.randint(1, picture_amount)
-
-    photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = random_int)
+    photo = picture_info
     rated_amount = photo[0]["rated"]
 
     # dit moet nog in html gezet worden
@@ -98,9 +92,21 @@ def rate(rating):
     new_rating = (old_rating * rated_amount + rating) /(rated_amount + 1)
     photo_id = photo[0]["photo_id"]
 
-    return db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id"
+    db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id"
                         , rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
 
+
+def picture():
+    pictures = db.execute("SELECT * FROM photo")
+    picture_amount = len(pictures)
+
+    if(picture_amount == 0):
+        return apology("er zijn geen foto's beschikbaar.")
+    random_int = random.randint(1, picture_amount)
+
+    photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = random_int)
+
+    return photo
 def follow_helper():
     "deze functie zorgt ervoor dat een user mensen kan volgen"
 

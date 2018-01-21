@@ -144,15 +144,15 @@ def index():
 
         rating = 0
 
-        if(request.form.get("rate1")):
+        if(request.form.get("rate1")) != None:
             rating = 1
-        elif(request.form.get("rate2")):
+        elif(request.form.get("rate2")) != None:
             rating = 2
-        elif(request.form.get("rate3")):
+        elif(request.form.get("rate3")) != None:
             rating = 3
-        elif(request.form.get("rate4")):
+        elif(request.form.get("rate4")) != None:
             rating = 4
-        elif(request.form.get("rate5")):
+        elif(request.form.get("rate5")) != None:
             rating = 5
 
 

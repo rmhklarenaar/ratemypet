@@ -104,9 +104,6 @@ def register():
     else:
         return render_template("register.html")
 
-def quote():
-    return apology("pagina bestaat niet")
-
 
 @app.route("/logout")
 def logout():
@@ -118,6 +115,14 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
+@app.route("/follow", methods = ["GET", "POST"])
+def follow():
+    if request.method == "POST"
+        follow_helper()
+
+        return render_template("index.html")
+    else:
+        return render_template("index.html")
 
 @app.route("/", methods=["GET", "POST"])
 @login_required

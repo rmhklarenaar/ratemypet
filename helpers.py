@@ -47,6 +47,13 @@ def apology(message, code=400):
         return s
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
+def user_id():
+    # gebruiker ophalen uit de database
+    rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+    # Id van de gebruiker opslaan
+    session["user_id"] = rows[0]["id"]
+
+    return session["user_id"]
 
 def login_required(f):
     "zorgt ervoor dat een user eers moet inloggen alvorens een actie uit te voeren"
@@ -94,8 +101,9 @@ def rate(rating):
     return db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id"
                         , rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
 
-def follow():
+def follow_helper():
     "deze functie zorgt ervoor dat een user mensen kan volgen"
+
     return apology("pagina is nog niet af")
 def unfollow():
     "deze functie zorgt ervoor dat een user mensen kan onvolgen"

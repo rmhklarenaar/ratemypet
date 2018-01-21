@@ -117,12 +117,21 @@ def logout():
 
 @app.route("/userpage", methods = ["GET", "POST"])
 def userpage():
-    if request.method == "POST"
+    if request.method == "POST":
         follow_helper()
 
-        return render_template("index.html")
+        return render_template("userpage.html")
     else:
-        return render_template("index.html")
+        return render_template("userpage.html")
+
+@app.route("/upload", methods = ["GET", "POST"])
+def upload():
+    if request.method == "POST":
+        follow_helper()
+
+        return render_template("upload.html")
+    else:
+        return render_template("upload.html")
 
 @app.route("/", methods=["GET", "POST"])
 @login_required

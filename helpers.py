@@ -107,13 +107,26 @@ def picture():
     photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = random_int)
 
     return photo
-def follow_helper():
-    "deze functie zorgt ervoor dat een user mensen kan volgen"
 
-    return apology("pagina is nog niet af")
-def unfollow():
+def follow(user_to_follow):
+    "deze functie zorgt ervoor dat een user mensen kan volgen"
+    user = user_id()
+
+    username_to_follow = db.execute("SELECT username FROM users WHERE id = : user_to_follow", user_to_follow = user_to_follow)
+    username_user = db.execute("SELECT username FROM users WHERE id = : user", user = user)
+
+    db.execute("INSERT INTO following (id, following_id, following_username) VALUES(:id, :following_id, :following_username)", id = user, following_id = user_to_follow, following_username = username_user)
+    return db.execute("INSERT INTO followers (id, follower_id, follower_username) VALUES(:id, :follower_id, :follower_username)", id = user_to_follow, following_id = user, following_username = username_to_follow)
+
+def unfollow(user_to_unfollow):
     "deze functie zorgt ervoor dat een user mensen kan onvolgen"
-    return apology("pagina is nog niet af")
+    user = user_id()
+
+    db.execute("SELECT username FROM users WHERE id = :user", user = user)
+
+    db.execute("DELETE * FROM following WHERE id = :id AND following_id = :following_id", id = user, following_id = user_to_unfollow)
+    return db.execute("DELETE * FROM followers WHERE id = :id AND follower_id = :follower_id", id = user_to_unfollow, follower_id = user)
+
 def comment():
     "deze functie zorgt ervoor dat een user comments kan toevoegen"
     return apology("pagina is nog niet af")

@@ -47,13 +47,12 @@ def apology(message, code=400):
         return s
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
-def user_id():
+def user_id(username):
     # gebruiker ophalen uit de database
-    rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+    rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
     # Id van de gebruiker opslaan
     session["user_id"] = rows[0]["id"]
 
-    return session["user_id"]
 
 def login_required(f):
     "zorgt ervoor dat een user eers moet inloggen alvorens een actie uit te voeren"
@@ -84,9 +83,6 @@ def rate(rating, picture_info):
 
     photo = picture_info
     rated_amount = photo[0]["rated"]
-
-    # dit moet nog in html gezet worden
-    rating = rating
 
     old_rating = photo[0]["rating"]
     new_rating = (old_rating * rated_amount + rating) /(rated_amount + 1)
@@ -125,6 +121,12 @@ def unfollow(user_to_unfollow):
 
     db.execute("DELETE * FROM following WHERE id = :id AND following_id = :following_id", id = user, following_id = user_to_unfollow)
     return db.execute("DELETE * FROM followers WHERE id = :id AND follower_id = :follower_id", id = user_to_unfollow, follower_id = user)
+
+def follow_count(user_id):
+    followers = db.execute("SELECT follower_id FROM followers WHERE id = :id", id = user_id)
+    following = db.execute("SELECT following_id FROM following WHERE id = :id", id = user_id)
+    print(followers)
+    print(following)
 
 def comment():
     "deze functie zorgt ervoor dat een user comments kan toevoegen"

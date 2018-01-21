@@ -54,8 +54,7 @@ def login():
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
             return apology("invalid username and/or password")
 
-        # remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        user_id(request.form.get("username"))
 
         # redirect user to home page
         return render_template("index.html")
@@ -141,7 +140,7 @@ def index():
     old_rating = picture_info[0]["rating"]
 
     if request.method == "POST":
-
+        follow_count(session["user_id"])
         rating = 0
 
         if(request.form.get("rate1")) != None:
@@ -158,24 +157,9 @@ def index():
 
         rate(rating, picture_info)
 
-        return render_template("index.html", photo_path = photo_path, rating = old_rating)
+        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
     else:
-        return render_template("index.html", photo_path = photo_path, rating = old_rating)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
 
 @app.route("/userpage", methods=["GET", "POST"])
 @login_required

@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block main %}
+
     <form action="{{ url_for('index') }}" method="post">
-        <img src="~/workspace/ratemypet/uploads/0.jpg"/> <br/>
+        <img src="{{photo_path}}" style="height: 400px; width: 400px;"/> <br/><br/>
 
         <button class="btn btn-default" type="submit" name="rate1">1</button>
         <button class="btn btn-default" type="submit" name="rate2">2</button>

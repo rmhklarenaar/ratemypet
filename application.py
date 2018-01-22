@@ -4,6 +4,7 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from helpers import *
+import os
 
 "GEEN IDEE WAT DIT STUK HIERONDER DOET (BEGIN)"
 # configure application
@@ -123,12 +124,22 @@ def userpage():
     else:
         return render_template("userpage.html")
 
-@app.route("/upload", methods = ["GET", "POST"])
-def upload():
-    if request.method == "POST":
-        follow_helper()
 
-        return render_template("upload.html")
+# meer info over de werking: https://medium.com/@antoinegrandiere/image-upload-and-moderation-with-python-and-flask-e7585f43828a
+# hier naar kijken alsjeblieft
+# het werkt bijna
+UPLOAD_FOLDER = os.path.basename('/static/uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route("/upload", methods = ["GET", "POST"])
+def upload_file():
+    if request.method == "POST":
+        file = request.files['image']
+        f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
+        file.save(f)
+
+        return render_template('index.html')
     else:
         return render_template("upload.html")
 
@@ -180,21 +191,3 @@ def search_user():
 
     else:
         return render_template("userpage.html")
-
-
-@app.route("/", methods=["GET", "POST"])
-@login_required
-def upload_image():
-
-    if request.method == "POST":
-        if not request.form.get("caption"):
-            return apology("please provide a caption")
-
-        add_photo()
-
-        return render_template("succes.html")
-
-
-
-    else:
-        return render_template("upload.html")

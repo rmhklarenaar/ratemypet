@@ -141,6 +141,9 @@ def following_follower(user_id):
     follower_following += [db.execute("SELECT following_username FROM following WHERE id = :id", id = user_id)]
     return follower_following
 
+def get_pictures(user_id):
+    return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
+
 def comment():
     "deze functie zorgt ervoor dat een user comments kan toevoegen"
     return apology("pagina is nog niet af")

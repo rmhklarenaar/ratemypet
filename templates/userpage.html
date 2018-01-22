@@ -18,7 +18,15 @@
         <button class="btn btn-default" type="submit" name="unfollow" value = "yes">Unfollow</button>
     </form>
     <p>Posts: {{post_amount}}</p><p>Followers: {{follower_amount}}</p><p>Folling: {{following_amount}}</p>
+    <p>
+        {% for picture in picture_info%}
+            <tr>
+                <td><img src="{{picture.photo_path}}" style="height: 400px; width: 400px;"/></td>
+                <td><p style="color: black; font-size:30px; ">{{picture.rating}}</p></td>
 
+            </tr>
+        {% endfor%}
+    </p>
     <img src="{{photo_path}}" alt="{{photo_caption}}"/>
 
 {% endblock %}

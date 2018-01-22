@@ -132,7 +132,11 @@ def userpage():
         followers_following = following_follower(user_id)
         following = followers_following[0]
         followers = followers_following[1]
-        return render_template("userpage.html", user_id = user_id, username = username, following_amount = len(followers), follower_amount = len(following))
+
+        picture_info = get_pictures(user_id)
+        return render_template("userpage.html", user_id = user_id, username = username,
+                                following_amount = len(followers), follower_amount = len(following),
+                                picture_info = picture_info)
     else:
         return render_template("userpage.html", users_id = user_id, username = username)
 

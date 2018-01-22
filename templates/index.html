@@ -7,16 +7,19 @@
 {% block main %}
 
 <h1>Feed</h1>
-<h3>{{username}}</h3>
+<form action="{{ url_for('userpage') }}" method="post">
+    <button class="btn btn-default" type="submit" name="user_id" value={{user_id}}>{{username}}</button>
+</form>
+
 <img src="{{photo_path}}" style="height: 400px; width: 400px;"/>
 <br/>
 <br/>
 <form action="{{ url_for('index') }}" method="post">
-    <button class="btn btn-default" type="submit" name="rate1">1</button>
-    <button class="btn btn-default" type="submit" name="rate2">2</button>
-    <button class="btn btn-default" type="submit" name="rate3">3</button>
-    <button class="btn btn-default" type="submit" name="rate4">4</button>
-    <button class="btn btn-default" type="submit" name="rate5">5</button>
+    <button class="btn btn-default" type="submit" name="rate" value = "1">1</button>
+    <button class="btn btn-default" type="submit" name="rate" value = "2">2</button>
+    <button class="btn btn-default" type="submit" name="rate" value = "3">3</button>
+    <button class="btn btn-default" type="submit" name="rate" value = "4">4</button>
+    <button class="btn btn-default" type="submit" name="rate" value = "5">5</button>
 </form>
 <br/>
 <p style="color: black; font-size:30px; ">{{rating}}</p>

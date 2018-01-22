@@ -89,16 +89,14 @@ def register():
         rows = select_username()
 
         # ensure username exists and password is correct
-        if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
+        if rows == None:
             return apology("invalid username and/or password")
 
         # add user to database
         add_user()
 
-        session["user_id"] = rows[0]["id"]
-
         # redirect user to home page
-        return render_template("index.html")
+        return render_template("login.html")
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -116,13 +114,17 @@ def logout():
     return redirect(url_for("login"))
 
 @app.route("/userpage", methods = ["GET", "POST"])
+@login_required
 def userpage():
+    user_id = request.form.get("user_id")
+    username = get_username(user_id)
     if request.method == "POST":
-        follow_helper()
+        if request.form.get("follow") == "yes":
+            follow(user_id)
 
-        return render_template("userpage.html")
+        return render_template("userpage.html", user_id = user_id, username = username)
     else:
-        return render_template("userpage.html")
+        return render_template("userpage.html", users_id = user_id, username = username)
 
 
 # meer info over de werking: https://medium.com/@antoinegrandiere/image-upload-and-moderation-with-python-and-flask-e7585f43828a
@@ -139,7 +141,7 @@ def upload_file():
 
         file.save(f)
 
-        return render_template('index.html')
+        return render_template("index.html")
     else:
         return render_template("upload.html")
 
@@ -147,32 +149,24 @@ def upload_file():
 @login_required
 def index():
     picture_info = picture()
+    user_id = picture_info[0]["id"]
     photo_path = picture_info[0]["photo_path"]
     old_rating = picture_info[0]["rating"]
+    username = get_username(user_id)
 
     if request.method == "POST":
-        follow_count(session["user_id"])
-        rating = 0
 
-        if(request.form.get("rate1")) != None:
-            rating = 1
-        elif(request.form.get("rate2")) != None:
-            rating = 2
-        elif(request.form.get("rate3")) != None:
-            rating = 3
-        elif(request.form.get("rate4")) != None:
-            rating = 4
-        elif(request.form.get("rate5")) != None:
-            rating = 5
+        if(request.form.get("go_to_user")) != None:
+            return render_template("userpage.html", user_id = user_id, username = user_username)
 
-
+        rating = int(request.form.get("rate"))
         rate(rating, picture_info)
 
-        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
+        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
     else:
         return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
 
-@app.route("/userpage", methods=["GET", "POST"])
+@app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def search_user():
 

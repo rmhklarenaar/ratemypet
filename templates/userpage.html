@@ -6,9 +6,10 @@
 
 {% block main %}
 
-    <h1>User</h1>
-    <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <h1>{{username}}</h1>
 
+    <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <button class="btn btn-default" type="submit" name="follow" value = "yes">Follow {{username}}</button>
     <p>Posts: {{post_amount}}</p><p>Followers: {{follower_amount}}</p><p>Folling: {{following_amount}}</p>
 
     <img src="{{photo_path}}" alt="{{photo_caption}}"/>

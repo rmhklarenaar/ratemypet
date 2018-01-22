@@ -72,6 +72,10 @@ def add_user():
 
     return result
 
+def get_username(user_id):
+    username = db.execute("SELECT username FROM users WHERE id = :id", id = user_id)
+    return username[0]["username"]
+
 def select_username():
     return db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
 
@@ -106,9 +110,13 @@ def picture():
 def follow(user_to_follow):
     "deze functie zorgt ervoor dat een user mensen kan volgen"
     user = user_id()
-
+    your_user = session["user_id"]
     username_to_follow = db.execute("SELECT username FROM users WHERE id = : user_to_follow", user_to_follow = user_to_follow)
     username_user = db.execute("SELECT username FROM users WHERE id = : user", user = user)
+
+    check = db.execute("SELECT * FROM following WHERE id = :your_user AND following_id = user", your_user = your_user, user = user)
+    if check:
+        return apology("you are already following this person")
 
     db.execute("INSERT INTO following (id, following_id, following_username) VALUES(:id, :following_id, :following_username)", id = user, following_id = user_to_follow, following_username = username_user)
     return db.execute("INSERT INTO followers (id, follower_id, follower_username) VALUES(:id, :follower_id, :follower_username)", id = user_to_follow, following_id = user, following_username = username_to_follow)
@@ -122,11 +130,11 @@ def unfollow(user_to_unfollow):
     db.execute("DELETE * FROM following WHERE id = :id AND following_id = :following_id", id = user, following_id = user_to_unfollow)
     return db.execute("DELETE * FROM followers WHERE id = :id AND follower_id = :follower_id", id = user_to_unfollow, follower_id = user)
 
-def follow_count(user_id):
-    followers = db.execute("SELECT follower_id FROM followers WHERE id = :id", id = user_id)
-    following = db.execute("SELECT following_id FROM following WHERE id = :id", id = user_id)
-    print(followers)
-    print(following)
+def following_follower(user_id):
+    follower_following = []
+    follower_following += db.execute("SELECT follower_username FROM followers WHERE id = :id", id = user_id)
+    follower_following += db.execute("SELECT following_username FROM following WHERE id = :id", id = user_id)
+    return follower_following
 
 def comment():
     "deze functie zorgt ervoor dat een user comments kan toevoegen"

@@ -113,6 +113,30 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
+@app.route("/your_userpage", methods = ["GET", "POST"])
+@login_required
+def your_userpage():
+    user_id = session["user_id"]
+    username = get_username(user_id)
+
+    if request.method == "POST":
+        if request.form.get("change") == "yes":
+            return render_template("upload_profile_picture.html")
+        return render_template("your_userpage.html", user_id = user_id, username = username)
+
+    else:
+         # Volgen van andere gebruiker
+        followers_following = following_follower(user_id)
+        following = followers_following[0]
+        followers = followers_following[1]
+
+        picture_info = get_pictures(user_id)
+        return render_template("your_userpage.html", user_id = user_id, username = username,
+                                following_amount = len(followers), follower_amount = len(following),
+                                picture_info = picture_info)
+        return render_template("your_userpage.html", users_id = user_id, username = username)
+
+
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def userpage():
@@ -159,6 +183,18 @@ def upload_file():
     else:
         return render_template("upload.html")
 
+@app.route("/upload_profile_picture", methods = ["GET", "POST"])
+def upload_profile_picture():
+    if request.method == "POST":
+        file = request.files['image']
+        f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
+        file.save(f)
+
+        return render_template("your_userpage.html")
+    else:
+        return render_template("upload_profile_picture.html")
+
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
@@ -169,8 +205,10 @@ def index():
     username = get_username(user_id)
 
     if request.method == "POST":
+        if request.form.get("go_to_user") == session["user_id"]:
+            return render_template("userpage.html", user_id = user_id, username = user_username)
 
-        if(request.form.get("go_to_user")) != None:
+        if request.form.get("go_to_user") != None:
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
         rating = int(request.form.get("rate"))
@@ -179,6 +217,11 @@ def index():
         return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
     else:
         return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
+
+# @app.route("/profile_picture", methods = ["GET", "POST"])
+# @login_required
+# def profile_picture():
+
 
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required

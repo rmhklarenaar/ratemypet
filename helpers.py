@@ -73,7 +73,7 @@ def add_user():
     return result
 
 def get_username(user_id):
-    username = db.execute("SELECT username FROM users WHERE id = :id", id = user_id)
+    username = db.execute("SELECT username FROM users WHERE id = :user_id", user_id = user_id)
     return username[0]["username"]
 
 def select_username():
@@ -144,6 +144,8 @@ def following_follower(user_id):
 def get_pictures(user_id):
     return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
 
+def profile_picture():
+    return apology("pagina is nog niet af")
 def comment():
     "deze functie zorgt ervoor dat een user comments kan toevoegen"
     return apology("pagina is nog niet af")

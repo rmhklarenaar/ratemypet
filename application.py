@@ -118,11 +118,21 @@ def logout():
 def userpage():
     user_id = request.form.get("user_id")
     username = get_username(user_id)
-    if request.method == "POST":
-        if request.form.get("follow") == "yes":
-            follow(user_id)
 
-        return render_template("userpage.html", user_id = user_id, username = username)
+    if request.method == "POST":
+        # Volgen van andere gebruiker
+        if request.form.get("follow") == "yes":
+            if(follow(user_id) == "Already following"):
+                return apology("You are alraedy following this account")
+
+        # Ontvolgen van andere gebruiker
+        elif request.form.get("unfollow") == "yes":
+            if(unfollow(user_id) == "Not following"):
+                return apology("You are not following this account")
+        followers_following = following_follower(user_id)
+        following = followers_following[0]
+        followers = followers_following[1]
+        return render_template("userpage.html", user_id = user_id, username = username, following_amount = len(followers), follower_amount = len(following))
     else:
         return render_template("userpage.html", users_id = user_id, username = username)
 

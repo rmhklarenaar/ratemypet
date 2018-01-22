@@ -9,7 +9,14 @@
     <h1>{{username}}</h1>
 
     <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
-    <button class="btn btn-default" type="submit" name="follow" value = "yes">Follow {{username}}</button>
+    <form action="{{ url_for('userpage') }}" method="post">
+        <input type="hidden" name="user_id" value={{user_id}}>
+        <button class="btn btn-default" type="submit" name="follow" value = "yes">Follow</button>
+    </form>
+    <form action="{{ url_for('userpage') }}" method="post">
+        <input type="hidden" name="user_id" value={{user_id}}>
+        <button class="btn btn-default" type="submit" name="unfollow" value = "yes">Unfollow</button>
+    </form>
     <p>Posts: {{post_amount}}</p><p>Followers: {{follower_amount}}</p><p>Folling: {{following_amount}}</p>
 
     <img src="{{photo_path}}" alt="{{photo_caption}}"/>

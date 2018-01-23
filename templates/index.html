@@ -14,6 +14,16 @@
 <img src="{{photo_path}}" style="height: 400px;"/>
 <br/>
 <br/>
+
+<script>
+
+</script>
+
+<form method="post">
+    <input type="text" name="comment" placeholder="comment">
+    <button class="btn btn-default" type="submit" name="comment">comment</button>
+</form>
+
 <form action="{{ url_for('index') }}" method="post">
     <button class="btn btn-default" type="submit" name="rate" value = "1">1</button>
     <button class="btn btn-default" type="submit" name="rate" value = "2">2</button>

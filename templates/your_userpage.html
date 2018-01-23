@@ -6,24 +6,19 @@
 
 {% block main %}
 
-    <h1>{{username}}</h1>
-
-    <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <h1>@{{username}}</h1> <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
 
     <form action="{{ url_for('upload_profile_picture') }}" method="get">
-        <button class="btn btn-default" type="submit" name="change" value = "yes">Change profile picture</button>
+        <button class="btn btn-default" type="submit" name="change" value = "yes">Change Profile Picture</button>
     </form>
 
-    <p>Posts: {{post_amount}}</p><p>Followers: {{follower_amount}}</p><p>Folling: {{following_amount}}</p>
+    <p>Posts: <strong>{{post_amount}}</strong>Followers: <strong>{{follower_amount}}</strong>Following: <strong>{{following_amount}}</strong></p>
     <p>
         {% for picture in picture_info%}
             <tr>
                 <td><img src="{{picture.photo_path}}" style="height: 400px; width: 400px;"/></td>
                 <td><p style="color: black; font-size:30px; ">{{picture.rating}}</p></td>
-
             </tr>
         {% endfor%}
-    </p>
-    <img src="{{photo_path}}" alt="{{photo_caption}}"/>
 
 {% endblock %}

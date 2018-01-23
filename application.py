@@ -5,6 +5,7 @@ from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from helpers import *
 from flask_uploads import UploadSet, configure_uploads, IMAGES
+import os
 
 "GEEN IDEE WAT DIT STUK HIERONDER DOET (BEGIN)"
 # configure application
@@ -175,6 +176,30 @@ def upload():
         filename = photos.save(request.files['photo'])
         return filename
     return render_template('upload.html')
+
+
+@app.route("/upload", methods = ["GET", "POST"])
+def upload_file():
+    if request.method == "POST":
+        file = request.files['image']
+        f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
+        return render_template("index.html")
+    else:
+        return render_template("upload.html")
+
+
+@app.route("/upload_profile_picture", methods = ["GET", "POST"])
+def upload_profile_picture():
+    if request.method == "POST":
+        file = request.files['image']
+        f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
+        file.save(f)
+
+        return render_template("your_userpage.html")
+    else:
+        return render_template("upload_profile_picture.html")
 
 @app.route("/", methods=["GET", "POST"])
 @login_required

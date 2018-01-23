@@ -1,0 +1,4 @@
+
+This is a command for adding extra modules to Flask:
+
+$ pip install Flask-Uploads

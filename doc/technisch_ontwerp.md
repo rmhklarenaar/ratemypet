@@ -1,8 +1,6 @@
 >Inlogpagina     Hier logt de user in (GET, POST)
-
->Registerpagina  Hier maakt de user een account aan (GET, POST)
-
->redircted naar index direct na register of inlog pagina
+Registerpagina  Hier maakt de user een account aan (GET, POST)
+redircted naar index direct na register of inlog pagina
 en te bereiken vanuit account_pagina, HOT, NOT
 >index           Dit is de feed van de user (POST)
 

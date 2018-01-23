@@ -96,15 +96,7 @@ def rate(rating, picture_info):
                         , rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
 
 def picture():
-    pictures = db.execute("SELECT * FROM photo")
-    picture_amount = len(pictures)
-
-    if(picture_amount == 0):
-        return apology("er zijn geen foto's beschikbaar.")
-    random_int = random.randint(1, picture_amount)
-
-    photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = random_int)
-
+    photo = db.execute("SELECT * FROM photo ORDER BY RANDOM() LIMIT 1")
     return photo
 
 def follow(user_to_follow):

@@ -174,7 +174,10 @@ configure_uploads(app, photos)
 def upload():
     if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
-        return filename
+        photo_path = "/static/uploads/" + filename
+        db.execute("INSERT INTO photo(photo_path, id) VALUES(:photo_path, :id)", id = session["user_id"], photo_path = photo_path)
+
+
     return render_template('upload.html')
 
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
@@ -185,7 +188,6 @@ def upload_profile_picture():
 
         file.save(f)
 
-        return render_template("your_userpage.html")
     else:
         return render_template("upload_profile_picture.html")
 

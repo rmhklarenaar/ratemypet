@@ -177,18 +177,6 @@ def upload():
         return filename
     return render_template('upload.html')
 
-
-@app.route("/upload", methods = ["GET", "POST"])
-def upload_file():
-    if request.method == "POST":
-        file = request.files['image']
-        f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-
-        return render_template("index.html")
-    else:
-        return render_template("upload.html")
-
-
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
 def upload_profile_picture():
     if request.method == "POST":

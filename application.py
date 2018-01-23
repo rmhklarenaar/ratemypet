@@ -184,18 +184,32 @@ def index():
     photo_path = picture_info[0]["photo_path"]
     old_rating = picture_info[0]["rating"]
     username = get_username(user_id)
-
     if request.method == "POST":
+
         if request.form.get("go_to_user") == session["user_id"]:
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
-        if request.form.get("go_to_user") != None:
-            return render_template("userpage.html", user_id = user_id, username = user_username)
+        #comments = select_comments()
+        comment = request.form.get("comment")
 
-        rating = int(request.form.get("rate"))
-        rate(rating, picture_info)
+        if request.form.get("rate") != None:
 
-        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
+            if(request.form.get("go_to_user")) != None:
+                return render_template("userpage.html", user_id = user_id, username = user_username)
+
+            if int(request.form.get("rate")):
+                rating = int(request.form.get("rate"))
+                rate(rating, picture_info)
+                return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
+            else:
+                if len(request.form.get("comment")) == 0:
+                    return apology("must provide a comment")
+                if request.form.get("comment") != None:
+                    add_comment(comment, picture_info)
+                    rating = int(request.form.get("rate"))
+                    rate(rating, picture_info)
+                    return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
+
     else:
         return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
 

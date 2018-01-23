@@ -144,11 +144,19 @@ def following_follower(user_id):
 def get_pictures(user_id):
     return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
 
-def profile_picture():
-    return apology("pagina is nog niet af")
-def comment():
-    "deze functie zorgt ervoor dat een user comments kan toevoegen"
-    return apology("pagina is nog niet af")
+
+
+def add_comment(comment, picture_info):
+    photo = picture_info[0]["photo_id"]
+    comment = comment
+    return db.execute("INSERT INTO comments(photo_id, comments) VALUES(:photo_id, :comments)",photo_id = photo,comments = comment)
+
+
+#def select_comments(picture_inf):
+    #photo = picture_inf
+    #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
+    #return select_comments
+
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
     return apology("pagina is nog niet af")

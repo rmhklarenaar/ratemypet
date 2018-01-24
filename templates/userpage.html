@@ -6,19 +6,21 @@
 
 {% block main %}
 
-    <h1>@{{username}}</h1>
-
-    <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <h1>@{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <br/>
     <form action="{{ url_for('userpage') }}" method="post">
         <input type="hidden" name="user_id" value={{user_id}}>
         <button class="btn btn-default" type="submit" name="follow" value = "yes">Follow</button>
     </form>
+
     <form action="{{ url_for('userpage') }}" method="post">
         <input type="hidden" name="user_id" value={{user_id}}>
         <button class="btn btn-default" type="submit" name="unfollow" value = "yes">Unfollow</button>
     </form>
+
+    <br/>
     <p>Posts: <strong>{{post_amount}}&nbsp;</strong>Followers: <strong>{{follower_amount}}&nbsp;</strong>Following: <strong>{{following_amount}}</strong></p>
-    <p>
+    <br/>
         {% for picture in picture_info%}
             <tr>
                 <td><img src="{{picture.photo_path}}" style="height: 400px;"/></td>

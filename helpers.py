@@ -144,6 +144,10 @@ def add_comment(comment, picture_info):
     return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo,comments = comment,username=session["user_id"])
 
 
+def show_comments(photo_id):
+    comments = db.execute("SELECT * FROM (SELECT * FROM comments WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 3) t ORDER BY time ASC", photo_id = photo_id)
+    reversed_comments = list(reversed(comments))
+    return reversed_comments
 #def select_comments(picture_inf):
     #photo = picture_inf
     #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)

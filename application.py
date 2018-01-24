@@ -134,7 +134,7 @@ def your_userpage():
         picture_info = get_pictures(user_id)
         return render_template("your_userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info)
+                                picture_info = picture_info, post_amount = len(picture_info))
         return render_template("your_userpage.html", users_id = user_id, username = username)
 
 
@@ -161,7 +161,7 @@ def userpage():
         picture_info = get_pictures(user_id)
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info)
+                                picture_info = picture_info, post_amount = len(picture_info))
     else:
         return render_template("userpage.html", users_id = user_id, username = username)
 
@@ -201,28 +201,21 @@ def index():
     photo_id = picture_info[0]["photo_id"]
     username = get_username(user_id)
     comments = show_comments(photo_id)
-    if request.method == "POST":
 
-        if request.form.get("go_to_user") == session["user_id"]:
+    if request.method == "POST":
+        if(request.form.get("go_to_user")) != None:
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
         if request.form.get("rate") != None:
+            rating = int(request.form.get("rate"))
+            rate(rating, picture_info)
+            return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
 
-            if(request.form.get("go_to_user")) != None:
-                return render_template("userpage.html", user_id = user_id, username = user_username)
-
-            if int(request.form.get("rate")):
-                rating = int(request.form.get("rate"))
-                rate(rating, picture_info)
-                return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
-            else:
-                if len(request.form.get("comment")) == 0:
-                    return apology("must provide a comment")
-                if request.form.get("comment") != None:
-                    add_comment(comment, picture_info)
-                    rating = int(request.form.get("rate"))
-                    rate(rating, picture_info)
-                    return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
+        if request.form.get("comment") != None:
+            if not request.form.get("comment").strip(" "):
+                return apology("ingevulde comment is leeg")
+            add_comment(request.form.get("comment"), picture_info)
+            return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
 
     else:
         return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)

@@ -1,18 +1,14 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Upload
+    Upload Profile Picture
 {% endblock %}
 
 {% block main %}
-
-    <h1>Upload</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data" >
-      <span class="btn btn-default btn-file">
-        Browse <input type="file" name="image">
-      </span>
-
-    <input type="submit" value="Upload your image" class="btn btn-primary">
-  </form>
-
+    <center>
+    <form method="post" enctype=multipart/form-data action="{{url_for('upload')}}">
+        <input type=file name=photo>
+        <input type="submit">
+    </form>
+    </center>
 {% endblock %}

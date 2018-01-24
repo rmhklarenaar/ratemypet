@@ -6,7 +6,6 @@
 
 {% block main %}
 
-<h1>Feed</h1>
 <form action="{{ url_for('userpage') }}" method="post">
     <button class="btn btn-default" type="submit" name="user_id" value={{user_id}}>{{username}}</button>
 </form>
@@ -15,16 +14,6 @@
 <br/>
 <br/>
 
-<!--<audio controls autoplay>-->
-<!--  <source src="horse.ogg" type="audio/ogg">-->
-<!--  <source src="horse.mp3" type="audio/mpeg">-->
-<!--</audio>-->
-
-<form method="post">
-    <input type="text" name="comment" placeholder="comment">
-    <button class="btn btn-default" type="submit" name="comment">comment</button>
-</form>
-
 <form action="{{ url_for('index') }}" method="post">
     <button class="btn btn-default" type="submit" name="rate" value = "1">1</button>
     <button class="btn btn-default" type="submit" name="rate" value = "2">2</button>
@@ -32,10 +21,13 @@
     <button class="btn btn-default" type="submit" name="rate" value = "4">4</button>
     <button class="btn btn-default" type="submit" name="rate" value = "5">5</button>
 </form>
-
-
 <br/>
 <p style="color: black; font-size:30px; ">{{rating}}</p>
+
+<form method="post">
+    <input type="text" name="comment" placeholder="comment">
+    <button class="btn btn-default" type="submit" name="comment">comment</button>
+</form>
 
 {% for comment in comments%}
     <tr>

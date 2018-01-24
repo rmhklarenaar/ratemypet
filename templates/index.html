@@ -31,7 +31,15 @@
     <button class="btn btn-default" type="submit" name="rate" value = "4">4</button>
     <button class="btn btn-default" type="submit" name="rate" value = "5">5</button>
 </form>
+
+
 <br/>
 <p style="color: black; font-size:30px; ">{{rating}}</p>
+
+{% for comment in comments%}
+    <tr>
+        <p><td>{{comment.username}}: {{comment.comments}}</td></p>
+    </tr>
+{% endfor%}
 
 {% endblock %}

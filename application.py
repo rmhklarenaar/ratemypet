@@ -59,7 +59,7 @@ def login():
         user_id(request.form.get("username"))
 
         # redirect user to home page
-        return render_template("index.html")
+        return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -226,7 +226,7 @@ def index():
                     return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
 
     else:
-        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1))
+        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id)
 
 # @app.route("/profile_picture", methods = ["GET", "POST"])
 # @login_required

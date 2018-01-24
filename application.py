@@ -120,6 +120,8 @@ def your_userpage():
     user_id = session["user_id"]
     username = get_username(user_id)
 
+
+
     if request.method == "POST":
         if request.form.get("change") == "yes":
             return render_template("upload_profile_picture.html")
@@ -132,9 +134,10 @@ def your_userpage():
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
+        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
         return render_template("your_userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info)
+                                picture_info = picture_info, profile_pic = profile_pic)
         return render_template("your_userpage.html", users_id = user_id, username = username)
 
 
@@ -159,34 +162,47 @@ def userpage():
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
+        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info)
+                                picture_info = picture_info, profile_pic = profile_pic)
     else:
         return render_template("userpage.html", users_id = user_id, username = username)
 
-photos = UploadSet('photos', IMAGES)
 
-app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
-configure_uploads(app, photos)
-
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route("/upload", methods=["GET", "POST"])
 def upload():
+    photos = UploadSet('photos', IMAGES)
+
+    app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
+    configure_uploads(app, photos)
+
     if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
         photo_path = "/static/uploads/" + filename
-        db.execute("INSERT INTO photo(photo_path, id) VALUES(:photo_path, :id)", id = session["user_id"], photo_path = photo_path)
-
-
+        upload_photo(photo_path)
     return render_template('upload.html')
+
+
+
+
 
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
 def upload_profile_picture():
-    if request.method == "POST":
-        file = request.files['image']
-        f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    photos = UploadSet('photos', IMAGES)
 
-        file.save(f)
+    app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pic'
+    configure_uploads(app, photos)
+    if request.method == 'POST' and 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        photo_path = "/static/profile_pic/" + filename
+        upload_profile_pic(photo_path)
+
+
+        return render_template("index.html")
+
+        #return redirect(url_for("your_userpage")
+
 
     else:
         return render_template("upload_profile_picture.html")

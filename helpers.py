@@ -141,7 +141,7 @@ def get_pictures(user_id):
 def add_comment(comment, picture_info):
     photo = picture_info[0]["photo_id"]
     comment = comment
-    return db.execute("INSERT INTO comments(photo_id, comments) VALUES(:photo_id, :comments)",photo_id = photo,comments = comment)
+    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo,comments = comment,username=session["user_id"])
 
 
 #def select_comments(picture_inf):
@@ -162,7 +162,22 @@ def search():
     return user
 
 
-def upload():
-    session["user_id"] = user_id()
-    add_photo = db.execute("INSERT INTO photo (id, photo_path) VALUES (:id, :photo_path)", id = session["user_id"], photo_path = "TODO")
+def upload_photo(photo_path):
+
+    photo_path = photo_path
+    add_photo = db.execute("INSERT INTO photo(id, photo_path) VALUES(:id, :photo_path)", id = session["user_id"] , photo_path = photo_path)
     return add_photo
+
+def upload_profile_pic(photo_path):
+    photo_path = photo_path
+    rows = db.execute("SELECT * FROM profile_pic WHERE id = :id", id = session["user_id"])
+    if len(rows) != 0:
+        db.execute("DELETE FROM profile_pic WHERE id = :id", id = session["user_id"])
+        db.execute("INSERT INTO profile_pic(id, photo_path) VALUES(:id, :photo_path)", id = session["user_id"] , photo_path = photo_path)
+    else:
+        db.execute("INSERT INTO profile_pic(id, photo_path) VALUES(:id, :photo_path)", id = session["user_id"] , photo_path = photo_path)
+
+def select_profile_pic(user_id):
+    profile_pics = db.execute("SELECT * FROM profile_pic WHERE id = :id", id = user_id)
+    return profile_pics
+

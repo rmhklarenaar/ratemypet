@@ -5,10 +5,9 @@
 {% endblock %}
 
 {% block main %}
-
+    <center>
     <form method="post" enctype=multipart/form-data action="{{url_for('upload')}}">
-        <input type=file name=photo>
-        <input type="submit">
+        <input type=file name=photo> <input type="submit">
     </form>
-
+    </center>
 {% endblock %}

@@ -31,8 +31,11 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
+
                         <a class="navbar-brand" href="{{ url_for('index') }}"><img src="static/logo.png" style="height: 45px; margin-top: -13px; margin-left: -10px; border: 0px solid black;"/></a>
+                    <h1 style="position: absolute; top: -15px; left: 0; right: 0; margin-left: auto; margin-right: auto; width: 120px;">{{self.title()}}</h1>
                     </div>
+
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
                             <ul class="nav navbar-nav navbar-right">

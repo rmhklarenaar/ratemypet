@@ -83,9 +83,9 @@ def post():
     "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
     return apology("pagina is nog niet af")
 
-def rate(rating, picture_info):
+def rate(rating, photo_id):
 
-    photo = picture_info
+    photo = db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
     rated_amount = photo[0]["rated"]
 
     old_rating = photo[0]["rating"]
@@ -138,10 +138,9 @@ def get_pictures(user_id):
 
 
 
-def add_comment(comment, picture_info):
-    photo = picture_info[0]["photo_id"]
+def add_comment(comment, photo_id):
     comment = comment
-    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo,comments = comment,username=session["user_id"])
+    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=session["user_id"])
 
 
 def show_comments(photo_id):

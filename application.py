@@ -174,6 +174,7 @@ def userpage():
 
 
 @app.route("/upload", methods=["GET", "POST"])
+@login_required
 def upload():
     photos = UploadSet('photos', IMAGES)
 
@@ -191,18 +192,20 @@ def upload():
 
 
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
+@login_required
 def upload_profile_picture():
     photos = UploadSet('photos', IMAGES)
 
     app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pic'
     configure_uploads(app, photos)
     if request.method == "POST" and "photo" in request.files:
-        filename = photos.save(request.files['photo'])
-        photo_path = "/static/profile_pic/" + filename
-        upload_profile_pic(photo_path)
-
-
-        return render_template("upload_profile_picture.html")
+        try:
+            filename = photos.save(request.files['photo'])
+            photo_path = "/static/profile_pic/" + filename
+            upload_profile_pic(photo_path)
+            return render_template("upload_profile_picture.html")
+        except:
+            return apology("must submit a file")
 
         #return redirect(url_for("your_userpage")
 
@@ -213,11 +216,25 @@ def upload_profile_picture():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    picture_info = picture()
-    user_id = picture_info[0]["id"]
+    request_photo_id = 0
+    if(request.form.get("photo_id") != None):
+        request_photo_id = int(request.form.get("photo_id"))
+
+    select_picture = False
+    while(select_picture == False):
+        picture_info = picture()
+        user_id = picture_info[0]["id"]
+        photo_id = int(picture_info[0]["photo_id"])
+
+        if user_id == session["user_id"]:
+            select_picture = False
+        elif photo_id == request_photo_id:
+            select_picture = False
+        else:
+            select_picture = True
+
     photo_path = picture_info[0]["photo_path"]
     old_rating = picture_info[0]["rating"]
-    photo_id = picture_info[0]["photo_id"]
     username = get_username(user_id)
     comments = show_comments(photo_id)
 
@@ -227,17 +244,15 @@ def index():
 
         if request.form.get("rate") != None:
             rating = int(request.form.get("rate"))
-            rate(rating, picture_info)
-            return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
-
+            rate(rating, request.form.get("photo_id"))
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
-            add_comment(request.form.get("comment"), picture_info)
-            return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
+            add_comment(request.form.get("comment"), request.form.get("photo_id"))
+        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
     else:
-        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
+        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
 # @app.route("/profile_picture", methods = ["GET", "POST"])
 # @login_required

@@ -5,10 +5,7 @@
 *.dll
 *.exe
 *.o
-<<<<<<< HEAD
-=======
 *.so
->>>>>>> ee6355c4fd0af8fae222bb18b8fd25a6322e8d89
 *.db
 
 # Packages #

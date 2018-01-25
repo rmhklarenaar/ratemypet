@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Feed
 {% endblock %}
 
 {% block main %}
@@ -14,7 +14,7 @@
 <br/>
 <br/>
 
-<form action="{{ url_for('index') }}" method="post">
+<form action="{{ url_for('feed') }}" method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
     <input type="hidden" name="photo_id" value={{user_id}}>
     <button class="btn btn-default" type="submit" name="rate" value = "1">1</button>
@@ -29,7 +29,7 @@
 <form method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
     <input type="hidden" name="photo_id" value={{user_id}}>
-    <input type="text" name="comment" placeholder="comment">
+    <input type="text" name="comment" placeholder="comment" maxlength="140">
     <button class="btn btn-default" type="submit" name="comment">comment</button>
 </form>
 

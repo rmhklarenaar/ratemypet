@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Feed
 {% endblock %}
 
 {% block main %}
@@ -14,7 +14,7 @@
 <br/>
 <br/>
 
-<form action="{{ url_for('index') }}" method="post">
+<form action="{{ url_for('feed') }}" method="post">
     <button class="btn btn-default" type="submit" name="rate" value = "1">1</button>
     <button class="btn btn-default" type="submit" name="rate" value = "2">2</button>
     <button class="btn btn-default" type="submit" name="rate" value = "3">3</button>

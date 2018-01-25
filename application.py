@@ -59,7 +59,7 @@ def login():
         user_id(request.form.get("username"))
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return redirect(url_for("feed"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -143,6 +143,11 @@ def your_userpage():
         return render_template("your_userpage.html", users_id = user_id, username = username)
 
 
+@app.route("/hot", methods = ["GET", "POST"])
+@login_required
+def hot():
+    return render_template("hot.html")
+
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def userpage():
@@ -212,7 +217,7 @@ def upload_profile_picture():
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
-def index():
+def feed():
     picture_info = picture()
     user_id = picture_info[0]["id"]
     photo_path = picture_info[0]["photo_path"]
@@ -228,16 +233,16 @@ def index():
         if request.form.get("rate") != None:
             rating = int(request.form.get("rate"))
             rate(rating, picture_info)
-            return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
+            return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
 
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
             add_comment(request.form.get("comment"), picture_info)
-            return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
+            return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
 
     else:
-        return render_template("index.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
+        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments)
 
 # @app.route("/profile_picture", methods = ["GET", "POST"])
 # @login_required

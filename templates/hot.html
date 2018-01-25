@@ -6,6 +6,13 @@
 
 {% block main %}
 
+    <h3>Hottest Pets - Leaderboard</h3>
 
+    {% for picture in leaderboard%}
+        <tr>
+            <td><img src="{{picture.photo_path}}" style="height: 400px;"/></td>
+            <td><p style="color: black; font-size:30px; ">{{picture.rating}}</p></td>
+        </tr>
+    {% endfor%}
 
 {% endblock %}

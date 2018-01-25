@@ -183,5 +183,8 @@ def upload_profile_pic(photo_path):
 
 def select_profile_pic(user_id):
     profile_pics = db.execute("SELECT * FROM profile_pic WHERE id = :id", id = user_id)
-    return profile_pics
+    if len(profile_pics) == 0:
+        return db.execute("SELECT * FROM profile_pic WHERE id = :id", id = 9)
+    else:
+        return profile_pics
 

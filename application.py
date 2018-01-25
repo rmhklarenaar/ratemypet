@@ -135,6 +135,7 @@ def your_userpage():
 
         picture_info = get_pictures(user_id)
         profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+        print(profile_pic)
         return render_template("your_userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
                                 picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
@@ -195,13 +196,13 @@ def upload_profile_picture():
 
     app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pic'
     configure_uploads(app, photos)
-    if request.method == 'POST' and 'photo' in request.files:
+    if request.method == "POST" and "photo" in request.files:
         filename = photos.save(request.files['photo'])
         photo_path = "/static/profile_pic/" + filename
         upload_profile_pic(photo_path)
 
 
-        return render_template("index.html")
+        return render_template("upload_profile_picture.html")
 
         #return redirect(url_for("your_userpage")
 

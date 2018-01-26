@@ -33,19 +33,8 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///database.db")
 
-def apology(message, code=400):
-    "returned een excuus als de user een veld leeg of niet correct invult"
-    def escape(s):
-        """
-        Escape special characters.
-
-        https://github.com/jacebrowning/memegen#special-characters
-        """
-        for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-                         ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
-            s = s.replace(old, new)
-        return s
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+def apology(message):
+    return render_template("apology.html", message = message)
 
 def user_id(username):
     # gebruiker ophalen uit de database
@@ -68,7 +57,7 @@ def add_user():
 
     # ensure that username is not already in use
     if not result:
-        return apology("username already in use")
+        return apology("Username already in use!")
 
     return result
 
@@ -78,10 +67,6 @@ def get_username(user_id):
 
 def select_username():
     return db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-
-def post():
-    "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
-    return apology("pagina is nog niet af")
 
 def rate(rating, photo_id):
 
@@ -147,17 +132,10 @@ def show_comments(photo_id):
     comments = db.execute("SELECT * FROM (SELECT * FROM comments WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 3) t ORDER BY time ASC", photo_id = photo_id)
     reversed_comments = list(reversed(comments))
     return reversed_comments
-#def select_comments(picture_inf):
-    #photo = picture_inf
-    #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
-    #return select_comments
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
-    return apology("pagina is nog niet af")
-def sorteer():
-    "deze functie zorgt ervoor dat een user zijn feed kan sorteren"
-    return apology("pagina is nog niet af")
+    return apology("Pagina is nog niet af!")
 
 
 def search():

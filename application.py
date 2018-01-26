@@ -230,15 +230,22 @@ def feed():
         picture_info = picture()
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
-
-        if user_id == session["user_id"]:
+        if none_left() == 1:
+            return apology ("all out of photo's")
+        elif history_check(photo_id) == 2:
             select_picture = False
+
+        elif user_id == session["user_id"]:
+            select_picture = False
+
         elif photo_id == request_photo_id:
             select_picture = False
         else:
             select_picture = True
 
+
     photo_path = picture_info[0]["photo_path"]
+    photo_id = int(picture_info[0]["photo_id"])
     old_rating = picture_info[0]["rating"]
     username = get_username(user_id)
     comments = show_comments(photo_id)
@@ -250,6 +257,7 @@ def feed():
         if request.form.get("rate") != None:
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
+            add_to_history(photo_id)
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")

@@ -229,7 +229,7 @@ def feed():
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
         if none_left() == 1:
-            return apology ("all out of photo's")
+            return apology ("All out of photo's!")
         elif history_check(photo_id) == 2:
             select_picture = False
         if request.form.get("check_comment") == "True":

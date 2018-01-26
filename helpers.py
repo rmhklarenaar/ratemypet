@@ -65,13 +65,8 @@ def get_username(user_id):
     username = db.execute("SELECT username FROM users WHERE id = :user_id", user_id = user_id)
     return username[0]["username"]
 
-<<<<<<< HEAD
 def select_username(username):
     return db.execute("SELECT * FROM users WHERE username = :username", username=username)
-=======
-def select_username():
-    return db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
->>>>>>> d590f17b4849ea44966a9bc3b561a2cb749b9fe8
 
 def rate(rating, photo_id):
 
@@ -141,12 +136,7 @@ def show_comments(photo_id):
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
-<<<<<<< HEAD
-    return apology("pagina is nog niet af")
-=======
     return apology("Pagina is nog niet af!")
-
->>>>>>> d590f17b4849ea44966a9bc3b561a2cb749b9fe8
 
 def search():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))

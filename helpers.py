@@ -33,19 +33,8 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///database.db")
 
-def apology(message, code=400):
-    "returned een excuus als de user een veld leeg of niet correct invult"
-    def escape(s):
-        """
-        Escape special characters.
-
-        https://github.com/jacebrowning/memegen#special-characters
-        """
-        for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-                         ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
-            s = s.replace(old, new)
-        return s
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+def apology(message):
+    return render_template("apology.html", message = message)
 
 def user_id(username):
     # gebruiker ophalen uit de database
@@ -76,12 +65,8 @@ def get_username(user_id):
     username = db.execute("SELECT username FROM users WHERE id = :user_id", user_id = user_id)
     return username[0]["username"]
 
-def select_username():
-    return db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-
-def post():
-    "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
-    return apology("pagina is nog niet af")
+def select_username(username):
+    return db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
 def rate(rating, photo_id):
 
@@ -148,18 +133,10 @@ def show_comments(photo_id):
     comments = db.execute("SELECT * FROM (SELECT * FROM comments WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 3) t ORDER BY time ASC", photo_id = photo_id)
     reversed_comments = list(reversed(comments))
     return reversed_comments
-#def select_comments(picture_inf):
-    #photo = picture_inf
-    #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
-    #return select_comments
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
     return apology("pagina is nog niet af")
-def sorteer():
-    "deze functie zorgt ervoor dat een user zijn feed kan sorteren"
-    return apology("pagina is nog niet af")
-
 
 def search():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
@@ -184,7 +161,7 @@ def upload_profile_pic(photo_path):
 def select_profile_pic(user_id):
     profile_pics = db.execute("SELECT * FROM profile_pic WHERE id = :id", id = user_id)
     if len(profile_pics) == 0:
-        return db.execute("SELECT * FROM profile_pic WHERE id = :id", id = 9)
+        return "/static/profile_pic/stock.png"
     else:
-        return profile_pics
+        return profile_pics[0]['photo_path']
 

@@ -50,14 +50,13 @@ def login():
             return apology("must provide password")
 
         # query database for username
-        rows = select_username()
+        rows = select_username(request.form.get("username"))
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
             return apology("invalid username and/or password")
 
         user_id(request.form.get("username"))
-
         # redirect user to home page
         return redirect(url_for("feed"))
 
@@ -87,11 +86,10 @@ def register():
             return apology("passwords must match")
 
         # querry database for username
-        rows = select_username()
-
+        rows = select_username(request.form.get("username"))
         # ensure username exists and password is correct
-        if rows == None:
-            return apology("invalid username and/or password")
+        if len(rows) > 0:
+            return apology("Username already exists")
 
         # add user to database
         add_user()
@@ -134,7 +132,7 @@ def your_userpage():
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+        profile_pic = select_profile_pic(user_id)
         print(profile_pic)
         return render_template("your_userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
@@ -169,7 +167,7 @@ def userpage():
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+        profile_pic = select_profile_pic(user_id)
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
                                 picture_info = picture_info, profile_pic = profile_pic,post_amount = len(picture_info))

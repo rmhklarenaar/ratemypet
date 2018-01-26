@@ -136,11 +136,12 @@ def following_follower(user_id):
 def get_pictures(user_id):
     return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
 
-
+def get_picture_info(photo_id):
+    return db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
 
 def add_comment(comment, photo_id):
     comment = comment
-    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=session["user_id"])
+    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=get_username(session["user_id"]))
 
 
 def show_comments(photo_id):

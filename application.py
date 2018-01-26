@@ -42,11 +42,11 @@ def login():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form.get("username").strip(" "):
             return apology("must provide username")
 
         # ensure password was submitted
-        elif not request.form.get("password"):
+        elif not request.form.get("password").strip(" "):
             return apology("must provide password")
 
         # query database for username
@@ -74,13 +74,13 @@ def register():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form.get("username").strip(" "):
             return apology("must provide username")
         # ensure password was submitted
-        elif not request.form.get("password"):
+        elif not request.form.get("password").strip(" "):
             return apology("must provide password")
         # ensure password check was submitted
-        elif not request.form.get("password_check"):
+        elif not request.form.get("password_check").strip(" "):
             return apology("must provide password check")
         # ensure passwords match
         elif request.form.get("password_check") != request.form.get("password"):
@@ -231,7 +231,13 @@ def feed():
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
 
-        if user_id == session["user_id"]:
+        print(type(request.form.get("check_comment")), request.form.get("check_comment"))
+        if request.form.get("check_comment") == "True":
+            picture_info = get_picture_info(request.form.get("photo_id"))
+            user_id = picture_info[0]["id"]
+            photo_id = int(picture_info[0]["photo_id"])
+            select_picture = True
+        elif user_id == session["user_id"]:
             select_picture = False
         elif photo_id == request_photo_id:
             select_picture = False
@@ -254,10 +260,12 @@ def feed():
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
             add_comment(request.form.get("comment"), request.form.get("photo_id"))
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
     else:
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
 # @app.route("/profile_picture", methods = ["GET", "POST"])
 # @login_required

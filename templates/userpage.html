@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block main %}
+    <form method="post">
+        <input type="text" name="username" placeholder="username" maxlength="30">
+        <button class="btn btn-default" type="submit" name="search">search</button>
+    </form>
 
     <h1>@{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
     <br/>

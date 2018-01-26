@@ -16,7 +16,6 @@
 
 <form action="{{ url_for('feed') }}" method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
-    <input type="hidden" name="photo_id" value={{user_id}}>
     <button class="btn btn-default" type="submit" name="rate" value = "1">1</button>
     <button class="btn btn-default" type="submit" name="rate" value = "2">2</button>
     <button class="btn btn-default" type="submit" name="rate" value = "3">3</button>
@@ -28,7 +27,8 @@
 
 <form method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
-    <input type="hidden" name="photo_id" value={{user_id}}>
+    <input type="hidden" name="user_id" value={{user_id}}>
+    <input type="hidden" name="check_comment" value=True>
     <input type="text" name="comment" placeholder="comment" maxlength="140">
     <button class="btn btn-default" type="submit" name="comment">comment</button>
 </form>

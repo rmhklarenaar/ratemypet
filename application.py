@@ -42,11 +42,11 @@ def login():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form.get("username").strip(" "):
             return apology("must provide username")
 
         # ensure password was submitted
-        elif not request.form.get("password"):
+        elif not request.form.get("password").strip(" "):
             return apology("must provide password")
 
         # query database for username
@@ -74,13 +74,13 @@ def register():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form.get("username").strip(" "):
             return apology("must provide username")
         # ensure password was submitted
-        elif not request.form.get("password"):
+        elif not request.form.get("password").strip(" "):
             return apology("must provide password")
         # ensure password check was submitted
-        elif not request.form.get("password_check"):
+        elif not request.form.get("password_check").strip(" "):
             return apology("must provide password check")
         # ensure passwords match
         elif request.form.get("password_check") != request.form.get("password"):
@@ -234,7 +234,11 @@ def feed():
             return apology ("all out of photo's")
         elif history_check(photo_id) == 2:
             select_picture = False
-
+        if request.form.get("check_comment") == "True":
+            picture_info = get_picture_info(request.form.get("photo_id"))
+            user_id = picture_info[0]["id"]
+            photo_id = int(picture_info[0]["photo_id"])
+            select_picture = True
         elif user_id == session["user_id"]:
             select_picture = False
 
@@ -255,17 +259,19 @@ def feed():
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
         if request.form.get("rate") != None:
+            add_to_history(photo_id)
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
-            add_to_history(photo_id)
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
             add_comment(request.form.get("comment"), request.form.get("photo_id"))
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
     else:
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1), username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
 # @app.route("/profile_picture", methods = ["GET", "POST"])
 # @login_required

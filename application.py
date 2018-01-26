@@ -230,7 +230,7 @@ def feed():
         photo_id = int(picture_info[0]["photo_id"])
         if none_left() == 1:
             return apology ("all out of photo's")
-        elif history_check(photo_id) == 2:
+        elif history_check(request.form.get("photo_id")) == 2:
             select_picture = False
         if request.form.get("check_comment") == "True":
             picture_info = get_picture_info(request.form.get("photo_id"))
@@ -257,7 +257,7 @@ def feed():
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
         if request.form.get("rate") != None:
-            add_to_history(photo_id)
+            add_to_history(request.form.get("photo_id"))
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
         if request.form.get("comment") != None:

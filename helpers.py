@@ -166,19 +166,17 @@ def select_profile_pic(user_id):
         return profile_pics[0]['photo_path']
 
 def add_to_history(photo_id):
-    photo_id = photo_id
     db.execute("INSERT INTO history(id,photo_id) VALUES(:id,:photo_id)", id = session["user_id"], photo_id = photo_id)
 
 def history_check(photo_id):
-    photo_id = photo_id
     rows = db.execute("SELECT * FROM history WHERE photo_id = :photo_id AND id = :id", photo_id = photo_id, id = session["user_id"])
-    print(rows)
-    if len(rows) == 0:
+    print(rows, "---------")
+    if len(rows) == 2:
         return 1
     else:
         return 2
 def none_left():
-    history = db.execute("SELECT photo_id FROM history")
+    history = db.execute("SELECT photo_id FROM history WHERE id = :id", id = session["user_id"])
     photo = db.execute("SELECT photo_id FROM photo WHERE id != :id", id = session["user_id"] )
     if len(photo)==len(history):
         return 1

@@ -121,11 +121,12 @@ def following_follower(user_id):
 def get_pictures(user_id):
     return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
 
-
+def get_picture_info(photo_id):
+    return db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
 
 def add_comment(comment, photo_id):
     comment = comment
-    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=session["user_id"])
+    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=get_username(session["user_id"]))
 
 
 def show_comments(photo_id):
@@ -165,3 +166,20 @@ def select_profile_pic(user_id):
     else:
         return profile_pics
 
+def add_to_history(photo_id):
+    photo_id = photo_id
+    db.execute("INSERT INTO history(id,photo_id) VALUES(:id,:photo_id)", id = session["user_id"], photo_id = photo_id)
+
+def history_check(photo_id):
+    photo_id = photo_id
+    rows = db.execute("SELECT * FROM history WHERE photo_id = :photo_id AND id = :id", photo_id = photo_id, id = session["user_id"])
+    print(rows)
+    if len(rows) == 0:
+        return 1
+    else:
+        return 2
+def none_left():
+    history = db.execute("SELECT photo_id FROM history")
+    photo = db.execute("SELECT photo_id FROM photo WHERE id != :id", id = session["user_id"] )
+    if len(photo)==len(history):
+        return 1

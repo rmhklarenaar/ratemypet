@@ -42,19 +42,19 @@ def login():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username").strip(" "):
-            return apology("must provide username")
+        if not request.form.get("username"):
+            return apology("Must provide username!")
 
         # ensure password was submitted
-        elif not request.form.get("password").strip(" "):
-            return apology("must provide password")
+        elif not request.form.get("password"):
+            return apology("Must provide password!")
 
         # query database for username
         rows = select_username(request.form.get("username"))
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+            return apology("Invalid username and/or password!")
 
         user_id(request.form.get("username"))
         # redirect user to home page
@@ -73,17 +73,17 @@ def register():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username").strip(" "):
-            return apology("must provide username")
+        if not request.form.get("username"):
+            return apology("Must provide username!")
         # ensure password was submitted
-        elif not request.form.get("password").strip(" "):
-            return apology("must provide password")
+        elif not request.form.get("password"):
+            return apology("Must provide password!")
         # ensure password check was submitted
-        elif not request.form.get("password_check").strip(" "):
-            return apology("must provide password check")
+        elif not request.form.get("password_check"):
+            return apology("Must provide password check!")
         # ensure passwords match
         elif request.form.get("password_check") != request.form.get("password"):
-            return apology("passwords must match")
+            return apology("Passwords must match!")
 
         # querry database for username
         rows = select_username(request.form.get("username"))
@@ -156,12 +156,12 @@ def userpage():
         # Volgen van andere gebruiker
         if request.form.get("follow") == "yes":
             if(follow(user_id) == "Already following"):
-                return apology("You are already following this account")
+                return apology("You are already following this account!")
 
         # Ontvolgen van andere gebruiker
         elif request.form.get("unfollow") == "yes":
             if(unfollow(user_id) == "Not following"):
-                return apology("You are not following this account")
+                return apology("You are not following this account!")
         followers_following = following_follower(user_id)
         following = followers_following[0]
         followers = followers_following[1]
@@ -208,7 +208,7 @@ def upload_profile_picture():
             upload_profile_pic(photo_path)
             return render_template("upload_profile_picture.html")
         except:
-            return apology("must submit a file")
+            return apology("Must submit a file!")
 
         #return redirect(url_for("your_userpage")
 
@@ -228,8 +228,10 @@ def feed():
         picture_info = picture()
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
-
-        print(type(request.form.get("check_comment")), request.form.get("check_comment"))
+        if none_left() == 1:
+            return apology ("all out of photo's")
+        elif history_check(photo_id) == 2:
+            select_picture = False
         if request.form.get("check_comment") == "True":
             picture_info = get_picture_info(request.form.get("photo_id"))
             user_id = picture_info[0]["id"]
@@ -237,12 +239,15 @@ def feed():
             select_picture = True
         elif user_id == session["user_id"]:
             select_picture = False
+
         elif photo_id == request_photo_id:
             select_picture = False
         else:
             select_picture = True
 
+
     photo_path = picture_info[0]["photo_path"]
+    photo_id = int(picture_info[0]["photo_id"])
     old_rating = picture_info[0]["rating"]
     username = get_username(user_id)
     comments = show_comments(photo_id)
@@ -252,11 +257,12 @@ def feed():
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
         if request.form.get("rate") != None:
+            add_to_history(photo_id)
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
-                return apology("ingevulde comment is leeg")
+                return apology("Comment can't be empty!")
             add_comment(request.form.get("comment"), request.form.get("photo_id"))
         return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
@@ -265,25 +271,20 @@ def feed():
         return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
-# @app.route("/profile_picture", methods = ["GET", "POST"])
-# @login_required
-# def profile_picture():
-
-
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def search_user():
 
     if request.method == "POST":
         if not request.form.get("search_username"):
-            return apology("must provide a username to search")
+            return apology("Must provide a username to search!")
 
         user = search()
         user_id = user[0]["id"]
         user_username = user[0]["username"]
 
         if len(user) == 0:
-            return apology("user does not exist")
+            return apology("User does not exist!")
 
         return render_template("userpage.html", user_id = user_id, user_username = user_username)
 

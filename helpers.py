@@ -57,7 +57,7 @@ def add_user():
 
     # ensure that username is not already in use
     if not result:
-        return apology("username already in use")
+        return apology("Username already in use!")
 
     return result
 
@@ -65,8 +65,13 @@ def get_username(user_id):
     username = db.execute("SELECT username FROM users WHERE id = :user_id", user_id = user_id)
     return username[0]["username"]
 
+<<<<<<< HEAD
 def select_username(username):
     return db.execute("SELECT * FROM users WHERE username = :username", username=username)
+=======
+def select_username():
+    return db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+>>>>>>> d590f17b4849ea44966a9bc3b561a2cb749b9fe8
 
 def rate(rating, photo_id):
 
@@ -136,7 +141,12 @@ def show_comments(photo_id):
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
+<<<<<<< HEAD
     return apology("pagina is nog niet af")
+=======
+    return apology("Pagina is nog niet af!")
+
+>>>>>>> d590f17b4849ea44966a9bc3b561a2cb749b9fe8
 
 def search():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
@@ -165,3 +175,20 @@ def select_profile_pic(user_id):
     else:
         return profile_pics[0]['photo_path']
 
+def add_to_history(photo_id):
+    photo_id = photo_id
+    db.execute("INSERT INTO history(id,photo_id) VALUES(:id,:photo_id)", id = session["user_id"], photo_id = photo_id)
+
+def history_check(photo_id):
+    photo_id = photo_id
+    rows = db.execute("SELECT * FROM history WHERE photo_id = :photo_id AND id = :id", photo_id = photo_id, id = session["user_id"])
+    print(rows)
+    if len(rows) == 0:
+        return 1
+    else:
+        return 2
+def none_left():
+    history = db.execute("SELECT photo_id FROM history")
+    photo = db.execute("SELECT photo_id FROM photo WHERE id != :id", id = session["user_id"] )
+    if len(photo)==len(history):
+        return 1

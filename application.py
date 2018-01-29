@@ -5,6 +5,7 @@ from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from helpers import *
 from flask_uploads import UploadSet, configure_uploads, IMAGES
+from giphypop import translate, upload
 import os
 
 "GEEN IDEE WAT DIT STUK HIERONDER DOET (BEGIN)"
@@ -143,10 +144,6 @@ def your_userpage():
         return render_template("your_userpage.html", users_id = user_id, username = username)
 
 
-@app.route("/hot", methods = ["GET", "POST"])
-@login_required
-def hot():
-    return render_template("hot.html")
 
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
@@ -225,6 +222,7 @@ def feed():
     if(request.form.get("photo_id") != None):
         request_photo_id = int(request.form.get("photo_id"))
 
+    counter = 0
     select_picture = False
     while(select_picture == False):
         picture_info = picture()
@@ -232,9 +230,13 @@ def feed():
         photo_id = int(picture_info[0]["photo_id"])
         if none_left() == 1:
             return apology ("all out of photo's")
-        elif history_check(photo_id) == 2:
+        elif history_check(request.form.get("photo_id")) == 2:
+
             select_picture = False
-        if request.form.get("check_comment") == "True":
+            counter += 1
+            if counter == total_photos():
+                return apology ("all out of photo's")
+        elif request.form.get("check_comment") == "True":
             picture_info = get_picture_info(request.form.get("photo_id"))
             user_id = picture_info[0]["id"]
             photo_id = int(picture_info[0]["photo_id"])
@@ -253,6 +255,8 @@ def feed():
     old_rating = picture_info[0]["rating"]
     username = get_username(user_id)
     comments = show_comments(photo_id)
+    gifs = show_gifs(photo_id)
+
 
     if request.method == "POST":
         if(request.form.get("go_to_user")) != None:
@@ -265,12 +269,33 @@ def feed():
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
-            add_comment(request.form.get("comment"), request.form.get("photo_id"))
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
+
+            if request.form.get("comment").startswith("/gif"):
+                query = request.form.get("comment")[len("/gif"):]
+
+                giphy = translate(query,api_key="OqJEhuVDXwcAVJbRre1ubPPRj2nkjMWh")
+                gif = giphy.fixed_height.downsampled.url
+                print(gif)
+                add_gif( gif, request.form.get("photo_id"))
+
+
+                return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
+
+            else:
+                add_comment(request.form.get("comment"), request.form.get("photo_id"))
+
+                return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+
+
+
+
+
+
     else:
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),
+        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
 # @app.route("/profile_picture", methods = ["GET", "POST"])
@@ -293,7 +318,21 @@ def search_user():
         if len(user) == 0:
             return apology("user does not exist")
 
+        followers_following = following_follower(user_id)
+        following = followers_following[0]
+        followers = followers_following[1]
+
+        picture_info = get_pictures(user_id)
+        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+
         return render_template("userpage.html", user_id = user_id, user_username = user_username)
 
     else:
         return render_template("userpage.html")
+
+@app.route("/hot", methods = ["GET", "POST"])
+@login_required
+def featured():
+    leaderboard = featured_photos()
+    return render_template("hot.html", leaderboard = leaderboard)
+

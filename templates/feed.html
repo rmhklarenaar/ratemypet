@@ -33,10 +33,13 @@
     <button class="btn btn-default" type="submit" name="comment">comment</button>
 </form>
 
-{% for comment in comments%}
-    <tr>
-        <p><td>{{comment.username}}: {{comment.comments}}</td></p>
-    </tr>
-{% endfor%}
+<tr>
+    {% for comment in comments%}
+    <p><td>{{comment.username}}: {{comment.comments}}</td></p>
+    {% endfor%}
+    {% for gif in gifs%}
+    <p><td>{{gif.username}}: <img src="{{gif.photo_path}}" style="height: 200px;"/></td></p>
+    {% endfor%}
+</tr>
 
 {% endblock %}

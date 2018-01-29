@@ -1,7 +1,7 @@
 import csv
 import urllib.request
 import random
-
+from giphypop import translate, upload
 from functools import wraps
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
@@ -143,11 +143,24 @@ def add_comment(comment, photo_id):
     comment = comment
     return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=get_username(session["user_id"]))
 
+def add_gif(gif, photo_id):
+    return db.execute("INSERT INTO gifs(photo_id, photo_path, username) VALUES(:photo_id, :photo_path, :username)",photo_id = photo_id ,photo_path = gif,username=get_username(session["user_id"]))
+
+def show_gifs(photo_id):
+    gifs = db.execute("SELECT * FROM (SELECT * FROM gifs WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 2) t ORDER BY time ASC", photo_id = photo_id)
+    reversed_gifs = list(reversed(gifs))
+    return reversed_gifs
+
+
 
 def show_comments(photo_id):
-    comments = db.execute("SELECT * FROM (SELECT * FROM comments WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 3) t ORDER BY time ASC", photo_id = photo_id)
+    comments = db.execute("SELECT * FROM (SELECT * FROM comments WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 2) t ORDER BY time ASC", photo_id = photo_id)
     reversed_comments = list(reversed(comments))
     return reversed_comments
+
+def featured_photos():
+    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
+    return featured
 #def select_comments(picture_inf):
     #photo = picture_inf
     #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
@@ -193,7 +206,6 @@ def add_to_history(photo_id):
     db.execute("INSERT INTO history(id,photo_id) VALUES(:id,:photo_id)", id = session["user_id"], photo_id = photo_id)
 
 def history_check(photo_id):
-    photo_id = photo_id
     rows = db.execute("SELECT * FROM history WHERE photo_id = :photo_id AND id = :id", photo_id = photo_id, id = session["user_id"])
     print(rows)
     if len(rows) == 0:
@@ -205,3 +217,6 @@ def none_left():
     photo = db.execute("SELECT photo_id FROM photo WHERE id != :id", id = session["user_id"] )
     if len(photo)==len(history):
         return 1
+def total_photos():
+    total = db.execute("SELECT photo_id FROM photo")
+    return len(total)

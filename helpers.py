@@ -33,19 +33,8 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///database.db")
 
-def apology(message, code=400):
-    "returned een excuus als de user een veld leeg of niet correct invult"
-    def escape(s):
-        """
-        Escape special characters.
-
-        https://github.com/jacebrowning/memegen#special-characters
-        """
-        for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-                         ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
-            s = s.replace(old, new)
-        return s
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+def apology(message):
+    return render_template("apology.html", message = message)
 
 def user_id(username):
     # gebruiker ophalen uit de database
@@ -68,7 +57,7 @@ def add_user():
 
     # ensure that username is not already in use
     if not result:
-        return apology("username already in use")
+        return apology("Username already in use!")
 
     return result
 
@@ -76,12 +65,8 @@ def get_username(user_id):
     username = db.execute("SELECT username FROM users WHERE id = :user_id", user_id = user_id)
     return username[0]["username"]
 
-def select_username():
-    return db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-
-def post():
-    "deze functie zorgt ervoor dat gebruikers foto's kunnen uploaden"
-    return apology("pagina is nog niet af")
+def select_username(username):
+    return db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
 def rate(rating, photo_id):
 
@@ -158,6 +143,7 @@ def show_comments(photo_id):
     reversed_comments = list(reversed(comments))
     return reversed_comments
 
+
 def featured_photos():
     featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
     return featured
@@ -166,13 +152,10 @@ def featured_photos():
     #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
     #return select_comments
 
+
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
-    return apology("pagina is nog niet af")
-def sorteer():
-    "deze functie zorgt ervoor dat een user zijn feed kan sorteren"
-    return apology("pagina is nog niet af")
-
+    return apology("Pagina is nog niet af!")
 
 def search():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
@@ -197,23 +180,22 @@ def upload_profile_pic(photo_path):
 def select_profile_pic(user_id):
     profile_pics = db.execute("SELECT * FROM profile_pic WHERE id = :id", id = user_id)
     if len(profile_pics) == 0:
-        return db.execute("SELECT * FROM profile_pic WHERE id = :id", id = 9)
+        return "/static/profile_pic/stock.png"
     else:
-        return profile_pics
+        return profile_pics[0]['photo_path']
 
 def add_to_history(photo_id):
-    photo_id = photo_id
     db.execute("INSERT INTO history(id,photo_id) VALUES(:id,:photo_id)", id = session["user_id"], photo_id = photo_id)
 
 def history_check(photo_id):
     rows = db.execute("SELECT * FROM history WHERE photo_id = :photo_id AND id = :id", photo_id = photo_id, id = session["user_id"])
-    print(rows)
-    if len(rows) == 0:
+    print(rows, "---------")
+    if len(rows) == 2:
         return 1
     else:
         return 2
 def none_left():
-    history = db.execute("SELECT photo_id FROM history")
+    history = db.execute("SELECT photo_id FROM history WHERE id = :id", id = session["user_id"])
     photo = db.execute("SELECT photo_id FROM photo WHERE id != :id", id = session["user_id"] )
     if len(photo)==len(history):
         return 1

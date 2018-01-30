@@ -284,9 +284,9 @@ def feed():
         return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
 
-@app.route("/userpage", methods = ["GET", "POST"])
+@app.route("/search", methods = ["GET", "POST"])
 @login_required
-def search_user():
+def search():
 
     if request.method == "POST":
         if not request.form.get("search_username"):
@@ -306,16 +306,16 @@ def search_user():
         picture_info = get_pictures(user_id)
         profile_pic = select_profile_pic(user_id)[0]["photo_path"]
 
-        return render_template("userpage.html", user_id = user_id, user_username = user_username)
+        return render_template("search.html", user_id = user_id, user_username = user_username)
 
     else:
-        return render_template("userpage.html")
+        return render_template("search.html")
 
-@app.route("/hot", methods = ["GET", "POST"])
-@login_required
-def featured():
-    if request.method == "POST":
-        leaderboard = featured_photos()
-        return render_template("hot.html", leaderboard = leaderboard)
-    else:
-        return render_template("hot.html")
+#@app.route("/hot", methods = ["GET", "POST"])
+#@login_required
+#def featured():
+#    if request.method == "POST":
+#        leaderboard = featured_photos()
+#        return render_template("hot.html", leaderboard = leaderboard)
+#    else:
+#        return render_template("hot.html")

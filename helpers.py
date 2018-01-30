@@ -59,6 +59,10 @@ def get_username(user_id):
     username = db.execute("SELECT username FROM users WHERE id = :user_id", user_id = user_id)
     return username[0]["username"]
 
+def get_user_id(username):
+    user_id = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    return user_id[0]["id"]
+
 def select_username(username):
     return db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
@@ -151,9 +155,9 @@ def search():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
     return user
 
-def upload_photo(photo_path):
+def upload_photo(photo_path, caption):
     photo_path = photo_path
-    add_photo = db.execute("INSERT INTO photo(id, photo_path) VALUES(:id, :photo_path)", id = session["user_id"] , photo_path = photo_path)
+    add_photo = db.execute("INSERT INTO photo(id, photo_path, caption) VALUES(:id, :photo_path, :caption)", id = session["user_id"] , photo_path = photo_path, caption = caption)
     return add_photo
 
 def upload_profile_pic(photo_path):
@@ -172,12 +176,14 @@ def select_profile_pic(user_id):
     else:
         return profile_pics[0]['photo_path']
 
+def reset_history(id):
+    db.execute("DELETE FROM history WHERE id = :id", id = id)
+
 def add_to_history(photo_id, user_id):
     db.execute("INSERT INTO history(user_id,id,photo_id) VALUES(:user_id,:id,:photo_id)", id = session["user_id"], user_id = user_id, photo_id = photo_id)
 
 def history_check(photo_id):
     rows = db.execute("SELECT * FROM history WHERE photo_id = :photo_id AND id = :id", photo_id = photo_id, id = session["user_id"])
-    print(len(rows))
     if len(rows) == 0:
         return 0
     else:

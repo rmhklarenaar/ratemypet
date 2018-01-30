@@ -21,7 +21,7 @@
             </tr>
         {% endfor%}
 
-    <form method="post" action="{{url_for('feed')}}">
-        <button class="btn btn-default" type="submit">Reset Feed History</button>
+    <form method="post">
+        <button class="btn btn-default" type="submit" name="reset">Reset Feed History</button>
     </form>
 {% endblock %}

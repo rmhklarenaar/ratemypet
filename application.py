@@ -280,12 +280,6 @@ def feed():
 
                 return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
-
-
-
-
-
-
     else:
         return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
                                 username = username, user_id = user_id, comments = comments, photo_id = photo_id)
@@ -320,6 +314,8 @@ def search_user():
 @app.route("/hot", methods = ["GET", "POST"])
 @login_required
 def featured():
-    leaderboard = featured_photos()
-    return render_template("hot.html", leaderboard = leaderboard)
-
+    if request.method == "POST":
+        leaderboard = featured_photos()
+        return render_template("hot.html", leaderboard = leaderboard)
+    else:
+        return render_template("hot.html")

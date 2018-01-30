@@ -23,7 +23,6 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
-
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
@@ -37,11 +36,8 @@ def apology(message):
     return render_template("apology.html", message = message)
 
 def user_id(username):
-    # gebruiker ophalen uit de database
     rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
-    # Id van de gebruiker opslaan
     session["user_id"] = rows[0]["id"]
-
 
 def login_required(f):
     "zorgt ervoor dat een user eers moet inloggen alvorens een actie uit te voeren"
@@ -54,11 +50,9 @@ def login_required(f):
 
 def add_user():
     result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
-
     # ensure that username is not already in use
     if not result:
         return apology("Username already in use!")
-
     return result
 
 def get_username(user_id):
@@ -77,8 +71,7 @@ def rate(rating, photo_id):
     new_rating = (old_rating * rated_amount + rating) /(rated_amount + 1)
     photo_id = photo[0]["photo_id"]
 
-    db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id"
-                        , rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
+    db.execute("UPDATE photo SET rating = :rating, rated = :rated WHERE photo_id = :photo_id", rating = new_rating, rated = rated_amount + 1, photo_id = photo_id)
 
 def picture():
     photo = db.execute("SELECT * FROM photo ORDER BY RANDOM() LIMIT 1")
@@ -136,22 +129,19 @@ def show_gifs(photo_id):
     reversed_gifs = list(reversed(gifs))
     return reversed_gifs
 
-
-
 def show_comments(photo_id):
     comments = db.execute("SELECT * FROM (SELECT * FROM comments WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 2) t ORDER BY time ASC", photo_id = photo_id)
     reversed_comments = list(reversed(comments))
     return reversed_comments
 
-
 def featured_photos():
     featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
     return featured
+
 #def select_comments(picture_inf):
     #photo = picture_inf
     #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
     #return select_comments
-
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
@@ -161,9 +151,7 @@ def search():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
     return user
 
-
 def upload_photo(photo_path):
-
     photo_path = photo_path
     add_photo = db.execute("INSERT INTO photo(id, photo_path) VALUES(:id, :photo_path)", id = session["user_id"] , photo_path = photo_path)
     return add_photo
@@ -194,6 +182,7 @@ def history_check(photo_id):
         return 0
     else:
         return 1
+
 def none_left():
     history = db.execute("SELECT photo_id FROM history WHERE id = :id", id = session["user_id"])
     photo = db.execute("SELECT photo_id FROM photo WHERE id != :id", id = session["user_id"] )

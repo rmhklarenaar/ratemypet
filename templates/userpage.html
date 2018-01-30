@@ -28,6 +28,7 @@
     <br/>
         {% for picture in picture_info%}
             <tr>
+                <td><h2>{{picture.caption}}</h2></td>
                 <td><img src="{{picture.photo_path}}" style="height: 400px;"/></td>
                 <td><p style="color: black; font-size:30px; ">{{'%0.1f'% picture.rating|float}}</p></td>
             </tr>

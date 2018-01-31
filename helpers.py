@@ -151,9 +151,9 @@ def show_comments(photo_id):
     reversed_comments = list(reversed(comments))
     return reversed_comments
 
-def featured_photos():
-    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
-    return featured
+#def featured_photos():
+#    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
+#    return featured
 
 #def select_comments(picture_inf):
     #photo = picture_inf

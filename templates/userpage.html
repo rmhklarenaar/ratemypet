@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <h1>✯{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <h1>✯{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" class="profilepic"/>
     <br/>
     <form action="{{ url_for('userpage') }}" method="post">
         <input type="hidden" name="user_id" value={{user_id}}>
@@ -23,8 +23,8 @@
         {% for picture in picture_info%}
             <tr>
                 <td><h2>{{caption}}</h2></td>
-                <td><img src="{{picture.photo_path}}" style="height: 400px;"/></td>
-                <td><p style="color: black; font-size:30px; ">{{'%0.1f'% picture.rating|float}}</p></td>
+                <td><img class="post" src="{{picture.photo_path}}"/></td>
+                <td><p>{{'%0.1f'% picture.rating|float}}</p></td>
             </tr>
         {% endfor%}
 

@@ -309,11 +309,11 @@ def search():
     else:
         return render_template("search.html")
 
-@app.route("/hot", methods = ["GET"])
-@login_required
-def featured():
-    if request.method == "POST":
-        leaderboard = featured_photos()
-        return render_template("hot.html", leaderboard = leaderboard)
-    else:
-        return render_template("hot.html")
+#@app.route('/hot', methods=['GET', 'POST'])
+#@login_required
+#def featured():
+#    if request.method == "POST":
+#        leaderboard = featured_photos()
+#        return render_template("hot.html", leaderboard = leaderboard)
+#    else:
+#        return render_template("hot.html")

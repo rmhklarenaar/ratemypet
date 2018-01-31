@@ -193,11 +193,10 @@ def upload_profile_picture():
             filename = photos.save(request.files['photo'])
             photo_path = "/static/profile_pic/" + filename
             upload_profile_pic(photo_path)
-            return render_template("upload_profile_picture.html")
         except:
             return apology("Must submit a file!")
 
-
+        return redirect(url_for("your_userpage"))
     else:
         return render_template("upload_profile_picture.html")
 
@@ -285,22 +284,11 @@ def search():
 
 @app.route("/change_password", methods=["GET", "POST"])
 @login_required
-def change_password():
+def password_change():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        change_password()
-        return render_template("feed.html")
+        change_password(request.form.get("current_password"), request.form.get("new_password"),  request.form.get("new_password_again"))
+        return redirect(url_for("your_userpage"))
     else:
-        return render_template("change_password.html")
-
-
-@app.route("/hottest", methods = ["GET", "POST"])
-@login_required
-def featured():
-    if request.method == "POST":
-        leaderboard = featured_photos()
-        return render_template("hottest.html", leaderboard = leaderboard)
-    else:
-        return render_template("hottes.html")
-
+        return render_template("password_change.html")
 

@@ -1,7 +1,7 @@
 from cs50 import SQL
 import csv
 import urllib.request
-
+from passlib.apps import custom_app_context as pwd_context
 from flask import redirect, render_template, request, session
 from functools import wraps
 
@@ -94,6 +94,10 @@ def following_follower(user_id):
 def get_pictures(user_id):
     return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
 
+
+def get_picture_info(photo_id):
+    return db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+
 def get_right_picture(request_photo_id, rate, check_comment):
     request_photo_id = 0
     if request_photo_id != None:
@@ -122,8 +126,6 @@ def get_right_picture(request_photo_id, rate, check_comment):
         else:
             return picture_info
 
-def get_picture_info(photo_id):
-    return db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
 
 def add_comment(comment, photo_id, username):
     username = get_username(session["user_id"])
@@ -143,9 +145,9 @@ def show_comments(photo_id):
     reversed_comments = list(reversed(comments))
     return reversed_comments
 
-#def featured_photos():
-#    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
-#    return featured
+def featured_photos():
+    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
+    return featured
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
@@ -200,37 +202,34 @@ def total_photos():
     total = db.execute("SELECT photo_id FROM photo")
     return len(total)
 
-def change_password():
+def change_password(current_password, new_password, new_password_again):
 
     rows = db.execute("SELECT * FROM users WHERE id = :id",  id = session["user_id"])
     # ensure all fields are filled in
-    if not request.form.get("current_password"):
+    if not current_password:
         return apology("must provide your current password")
 
-    elif not request.form.get("new_password"):
+    elif not new_password:
         return apology("must provide a new password")
 
-    elif not request.form.get("new_password_again"):
+    elif not new_password_again:
         return apology("must re-enter new password")
 
     # ensure the passwords match
-    elif request.form.get("new_password_again") != request.form.get("new_password"):
+    elif new_password_again != new_password:
         return apology("passwords do not match")
 
     # ensure the old password was correct
-    elif not pwd_context.verify(request.form.get("current_password"), rows[0]["hash"]):
+    elif not pwd_context.verify(current_password, rows[0]["hash"]):
         return apology("current password is not correct")
 
     # ensure the user creates a new password
-    elif request.form.get("new_password") == request.form.get("current_password"):
+    elif new_password == current_password:
         return apology("must provide a password that is diffrent from your current password")
 
     # update users password
-    hash = pwd_context.hash(request.form.get("new_password"))
+    hash = pwd_context.hash(new_password)
     db.execute("UPDATE users SET hash = :hash WHERE id = :id",id= session["user_id"], hash = hash)
-
-    # let the user know the password is changed
-    return render_template("feed.html")
 
 def delete_picture(photo_id):
     db.execute("DELETE FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)

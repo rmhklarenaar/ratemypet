@@ -13,11 +13,12 @@
             <div>
                 {% if session.user_id %}
                     <ul>
-                        <li><a href="{{url_for('logout')}}">Log Out</a></li>
-                        <li><a href="{{url_for('search')}}">Search</a></li>
-                        <li><a href="{{url_for('upload')}}">Upload</a></li>
-                        <li><a href="{{url_for('feed')}}">Feed</a></li>
-                        <li><a href="{{url_for('your_userpage')}}">My Account</a></li>
+                        <li><a href="{{url_for('.logout')}}">Log Out</a></li>
+                        <li><a href="{{url_for('.search')}}">Search</a></li>
+                        <li><a href="{{url_for('.hot')}}">Hot</a></li>
+                        <li><a href="{{url_for('.upload')}}">Upload</a></li>
+                        <li><a href="{{url_for('.feed')}}">Feed</a></li>
+                        <li><a href="{{url_for('.your_userpage')}}">My Account</a></li>
                     </ul>
                 {% else %}
                     <ul>

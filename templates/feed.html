@@ -34,17 +34,28 @@
     <input type="text" name="comment" placeholder="comment" maxlength="140">
     <button class="button" type="submit" name="comment">comment</button>
 </form>
-
-<form method="post">
-    <button class="button" type="button" name="report" value="report">Report</button>
+<form action="{{ url_for('feed') }}" method="post">
+    <button class="btn btn-default" type="submit" name="report" value="report">Report</button>
 </form>
 
 <tr>
     {% for comment in comments%}
-    <p><td><input type="submit" class="button" name="username" value="{{comment.username}}" method="post"></input>: {{comment.comments}}</td></p>
+    <p><td>
+        <form action="{{ url_for('userpage') }}" method="post">
+            <input type="submit" class="button" name="username" value="{{comment.username}}" method="post"></input>
+            <input type="hidden" name="user_id" value={{comment.id}}>
+        </form>
+        : {{comment.comments}}
+    </td></p>
     {% endfor%}
     {% for gif in gifs%}
-    <p><td><input type="submit" class="button" name="username" value="{{gif.username}}" method="post"></input>: <img src="{{gif.photo_path}}" style="height: 200px;"/></td></p>
+    <p><td>
+        <form action="{{ url_for('userpage') }}" method="post">
+            <input type="submit" class="button" name="username" value="{{gif.username}}" method="post"></input>
+            <input type="hidden" name="user_id" value={{gif.id}}>
+        </form>
+        : <img src="{{gif.photo_path}}" style="height: 200px;"/>
+    </td></p>
     {% endfor%}
 </tr>
 

@@ -124,6 +124,9 @@ def your_userpage():
     picture_info = get_pictures(user_id)
     profile_pic = select_profile_pic(user_id)
 
+    if request.form.get("photo_id") != None:
+        delete_picture(request.form.get("photo_id"))
+
     if request.form.get("reset") != None:
         reset_history(user_id)
 
@@ -139,6 +142,9 @@ def your_userpage():
 def userpage():
     user_id = request.form.get("user_id")
     username = get_username(user_id)
+
+    if int(user_id) == session["user_id"]:
+        return redirect(url_for("your_userpage"))
 
     if request.method == "POST":
         # Volgen van andere gebruiker
@@ -235,7 +241,6 @@ def feed():
         elif photo_id == request_photo_id:
             select_picture = False
         else:
-            add_to_history(user_id, photo_id,)
             select_picture = True
 
 
@@ -247,46 +252,38 @@ def feed():
     gifs = show_gifs(photo_id)
     photo_caption = picture_info[0]["caption"]
 
+    redirect_to_feed = render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
+                                caption = photo_caption)
+
     if request.method == "POST":
-        if(request.form.get("report") != None):
+        if request.form.get("report") != None:
             report(photo_id, user_id)
-
-        if(request.form.get("username")) != None:
-            return render_template("userpage.html", user_id = get_user_id(request.form_get("username")), username = request.form.get("username"))
-
-        if(request.form.get("go_to_user")) != None:
-            return render_template("userpage.html", user_id = user_id, username = user_username)
+            return redirect_to_feed
 
         if request.form.get("rate") != None:
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
-            return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
-                                caption = photo_caption)
+            add_to_history(user_id, photo_id)
+            return redirect_to_feed
+
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
+
             if request.form.get("comment").startswith("/gif"):
                 query = request.form.get("comment")[len("/gif"):]
-
                 giphy = translate(query,api_key="OqJEhuVDXwcAVJbRre1ubPPRj2nkjMWh")
                 gif = giphy.fixed_height.downsampled.url
-                add_gif( gif, request.form.get("photo_id"))
-
-                return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
-                                caption = photo_caption)
+                add_gif( gif, request.form.get("photo_id"), session["user_id"])
+                return redirect_to_feed
 
             else:
                 add_comment(request.form.get("comment"), request.form.get("photo_id"))
 
-                return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
-                                caption = photo_caption)
+                return redirect_to_feed
     else:
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
-                                caption = photo_caption)
+        return redirect_to_feed
 
 @app.route("/search", methods = ["GET", "POST"])
 @login_required

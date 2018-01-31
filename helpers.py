@@ -23,6 +23,19 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
@@ -200,6 +213,7 @@ def total_photos():
     total = db.execute("SELECT photo_id FROM photo")
     return len(total)
 
+
 def change_password():
 
     rows = db.execute("SELECT * FROM users WHERE id = :id",  id = session["user_id"])
@@ -231,3 +245,18 @@ def change_password():
 
     # let the user know the password is changed
     return render_template("feed.html")
+
+def report(photo_id, user_id):
+    report_count = db.execute("SELECT reports FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+    if report_count == 4:
+        db.execute("DELETE * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+    else:
+        db.execute("UPDATE photo SET reports = :reports WHERE photo_id = :photo_id", reports = report_count + 1, photo_id = photo_id)
+
+    user_report_count = db.execute("SELECT reports FROM users WHERE id = :user_id", user_id = user_id)
+
+    if user_report_count == 14:
+        db.execute("DELETE * FROM users WHERE id = :user_id", user_id = user_id)
+    else:
+        db.execute("UPDATE users SET reports = :reports WHERE id = :user_id", reports = user_report_count + 1, user_id = user_id)
+

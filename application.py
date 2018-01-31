@@ -273,11 +273,11 @@ def feed():
                 query = request.form.get("comment")[len("/gif"):]
                 giphy = translate(query,api_key="OqJEhuVDXwcAVJbRre1ubPPRj2nkjMWh")
                 gif = giphy.fixed_height.downsampled.url
-                add_gif( gif, request.form.get("photo_id"), session["user_id"])
+                add_gif(gif, request.form.get("photo_id"),username)
                 return redirect_to_feed
 
             else:
-                add_comment(request.form.get("comment"), request.form.get("photo_id"))
+                add_comment(request.form.get("comment"), request.form.get("photo_id"), usernames)
 
                 return redirect_to_feed
     else:
@@ -330,8 +330,12 @@ def change_password():
     else:
         return render_template("change_password.html")
 
-@app.route("/")
+@app.route("/hottest", methods = ["GET", "POST"])
 @login_required
 def featured():
-    leaderboard = featured_photos()
-    return render_template("hottest.html", leaderboard = leaderboard)
+    if request.method == "POST":
+        leaderboard = featured_photos()
+        return render_template("hottest.html", leaderboard = leaderboard)
+    else:
+        return render_template("hottes.html")
+

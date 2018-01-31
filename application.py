@@ -141,8 +141,6 @@ def your_userpage():
 
         return render_template("your_userpage.html", users_id = user_id, username = username)
 
-
-
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def userpage():
@@ -172,7 +170,6 @@ def userpage():
     else:
         return render_template("userpage.html", users_id = user_id, username = username)
 
-
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
@@ -186,10 +183,6 @@ def upload():
         photo_path = "/static/uploads/" + filename
         upload_photo(photo_path)
     return render_template('upload.html')
-
-
-
-
 
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
 @login_required
@@ -311,7 +304,7 @@ def search():
     else:
         return render_template("search.html")
 
-@app.route("/hot", methods = ["GET", "POST"])
+@app.route("/hot", methods = ["GET"])
 @login_required
 def featured():
     if request.method == "POST":

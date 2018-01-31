@@ -6,9 +6,9 @@
 
 {% block main %}
     <form action="{{url_for('register')}}" method="post">
-        <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" maxlength="20" required/>
-        <input class="form-control" name="password" placeholder="Password" type="password" maxlength="30" required/>
-        <input class="form-control" name="password_check" placeholder="Password (again)" type="password" required/>
+        <input autocomplete="off" class="loginform" name="username" placeholder="Username" type="text" maxlength="20" required autofocus/>
+        <input class="loginform" name="password" placeholder="Password" type="password" maxlength="30" required/>
+        <input class="loginform" name="password_check" placeholder="Password (again)" type="password" required/>
         <button class="button" type="submit">Register</button>
     </form>
 {% endblock %}

@@ -134,12 +134,12 @@ def get_pictures(user_id):
 def get_picture_info(photo_id):
     return db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
 
-def add_comment(comment, photo_id):
+def add_comment(comment, photo_id, user_id):
     comment = comment
-    return db.execute("INSERT INTO comments(photo_id, comments, username) VALUES(:photo_id, :comments, :username)",photo_id = photo_id ,comments = comment,username=get_username(session["user_id"]))
+    return db.execute("INSERT INTO comments(photo_id, comments, username, id) VALUES(:photo_id, :comments, :username, :user_id)",photo_id = photo_id ,comments = comment,username=get_username(user_id), user_id = user_id)
 
-def add_gif(gif, photo_id):
-    return db.execute("INSERT INTO gifs(photo_id, photo_path, username) VALUES(:photo_id, :photo_path, :username)",photo_id = photo_id ,photo_path = gif,username=get_username(session["user_id"]))
+def add_gif(gif, photo_id, user_id):
+    return db.execute("INSERT INTO gifs(photo_id, photo_path, username, id) VALUES(:photo_id, :photo_path, :username, :user_id)",photo_id = photo_id ,photo_path = gif,username=get_username(user_id), user_id = user_id)
 
 def show_gifs(photo_id):
     gifs = db.execute("SELECT * FROM (SELECT * FROM gifs WHERE photo_id = :photo_id ORDER BY time DESC LIMIT 2) t ORDER BY time ASC", photo_id = photo_id)
@@ -164,9 +164,9 @@ def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
     return apology("Pagina is nog niet af!")
 
+
 def search_user(username):
     user = db.execute("SELECT * FROM users WHERE username = :username", username = username)
-    print(username)
     return user
 
 def upload_photo(photo_path, caption):
@@ -245,17 +245,23 @@ def change_password():
     # let the user know the password is changed
     return render_template("feed.html")
 
+def delete_picture(photo_id):
+    db.execute("DELETE FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+
 def report(photo_id, user_id):
     report_count = db.execute("SELECT reports FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+    report_count = report_count[0]["reports"]
     if report_count == 4:
-        db.execute("DELETE * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+        delete_picture(photo_id)
     else:
-        db.execute("UPDATE photo SET reports = :reports WHERE photo_id = :photo_id", reports = report_count + 1, photo_id = photo_id)
+        new_reports = report_count + 1
+        db.execute("UPDATE photo SET reports = :reports WHERE photo_id = :photo_id", reports = new_reports, photo_id = photo_id)
 
     user_report_count = db.execute("SELECT reports FROM users WHERE id = :user_id", user_id = user_id)
-
+    user_report_count = user_report_count[0]["reports"]
     if user_report_count == 14:
         db.execute("DELETE * FROM users WHERE id = :user_id", user_id = user_id)
     else:
-        db.execute("UPDATE users SET reports = :reports WHERE id = :user_id", reports = user_report_count + 1, user_id = user_id)
+        new_user_reports = user_report_count + 1
+        db.execute("UPDATE users SET reports = :reports WHERE id = :user_id", reports = new_user_reports, user_id = user_id)
 

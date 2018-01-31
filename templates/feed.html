@@ -23,7 +23,12 @@
     <button class="rate" id="rate" type="submit" name="rate" value="3">✭</button>
     <button class="rate" id="rate" type="submit" name="rate" value="4">✭</button>
     <button class="rate" id="rate" type="submit" name="rate" value="5">✭</button>
-</form><p class="rating">Rating: {{rating}}</p>
+</form>
+{% if rating == 0 %}
+    <p class="rating"> Not rated yet</p>
+{% else %}
+    <p class="rating">{{rating}}</p>
+{% endif %}
 
 <form method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>

@@ -1,4 +1,3 @@
-from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
@@ -8,7 +7,6 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 from giphypop import translate, upload
 import os
 
-"GEEN IDEE WAT DIT STUK HIERONDER DOET (BEGIN)"
 # configure application
 app = Flask(__name__)
 
@@ -28,13 +26,8 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# configure CS50 Library to use SQLite database
-db = SQL("sqlite:///database.db")
-"GEEN IDEE WAT DIT STUK HIERONDER DOET (EINDE)"
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    "HIER LOGT DE USER IN"
 
     # forget any user_id
     session.clear()
@@ -116,6 +109,7 @@ def logout():
 @app.route("/your_userpage", methods = ["GET", "POST"])
 @login_required
 def your_userpage():
+    # storing varables
     user_id = session["user_id"]
     username = get_username(user_id)
     followers_following = following_follower(user_id)
@@ -124,15 +118,20 @@ def your_userpage():
     picture_info = get_pictures(user_id)
     profile_pic = select_profile_pic(user_id)
 
-    if request.form.get("photo_id") != None:
-        delete_picture(request.form.get("photo_id"))
+    # when the delete button is clicked, the photo will be deleted from the database
+    if request.form.get("delete_photo") != None:
+        delete_picture(request.form.get("delete_photo"))
+        return redirect(url_for("your_userpage"))
 
+    # when the reset button is clicked, the history will be cleared and the user can rate all pictures again
     if request.form.get("reset") != None:
         reset_history(user_id)
 
+    # when the change button is clicked, the user will be able to change his profile picture
     if request.form.get("change") == "yes":
         return render_template("upload_profile_picture.html")
 
+    # redirect to your userpage
     return render_template("your_userpage.html", user_id = user_id, username = username,
                             following_amount = len(followers), follower_amount = len(following),
                             picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
@@ -140,33 +139,40 @@ def your_userpage():
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def userpage():
+    print("00000000000000000000000000000000000000000000000000000")
+    # storing variables
     user_id = request.form.get("user_id")
     username = get_username(user_id)
 
+    # redirect to your own userpage when searching yourself so you cant follow yourself
     if int(user_id) == session["user_id"]:
         return redirect(url_for("your_userpage"))
 
+
     if request.method == "POST":
-        # Volgen van andere gebruiker
+        # following other users
         if request.form.get("follow") == "yes":
             if(follow(user_id) == "Already following"):
                 return apology("You are already following this account!")
 
-        # Ontvolgen van andere gebruiker
+        # unfollow other users
         elif request.form.get("unfollow") == "yes":
             if(unfollow(user_id) == "Not following"):
                 return apology("You are not following this account!")
+
+        #seperate followers and following from lists in list
         followers_following = following_follower(user_id)
         following = followers_following[0]
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)
+        # redirect to userpage
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info, profile_pic = profile_pic,post_amount = len(picture_info))
+                                picture_info = picture_info, profile_pic = select_profile_pic(user_id),post_amount = len(picture_info))
 
     else:
+        # redirect to userpage when GET
         return render_template("userpage.html", users_id = user_id, username = username)
 
 
@@ -198,142 +204,112 @@ def upload_profile_picture():
             filename = photos.save(request.files['photo'])
             photo_path = "/static/profile_pic/" + filename
             upload_profile_pic(photo_path)
-            return render_template("upload_profile_picture.html")
         except:
             return apology("Must submit a file!")
 
-
+        return redirect(url_for("your_userpage"))
     else:
         return render_template("upload_profile_picture.html")
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def feed():
-    request_photo_id = 0
-    if(request.form.get("photo_id") != None):
-        request_photo_id = int(request.form.get("photo_id"))
+    # get a picture that's unique and not from yourself
+    picture_info = get_right_picture(request.form.get("photo_id"), request.form.get("rate"), request.form.get("check_comment"))
+    if picture_info == "comment":
+        picture_info = get_picture_info(request.form.get("photo_id"))
 
-    select_picture = False
-    while(select_picture == False):
-        picture_info = picture()
-        user_id = picture_info[0]["id"]
-        photo_id = int(picture_info[0]["photo_id"])
+    # give apology when no pictures left to rate
+    if picture_info == "apology":
+        return apology ("all out of photo's")
 
-        if request.form.get("rate") != None:
-            add_to_history(user_id, photo_id)
-
-        if none_left() == 1:
-            return apology ("all out of photo's")
-        elif history_check(photo_id) != 0:
-            select_picture = False
-
-        elif request.form.get("check_comment") == "True":
-            picture_info = get_picture_info(request.form.get("photo_id"))
-            user_id = picture_info[0]["id"]
-            photo_id = int(picture_info[0]["photo_id"])
-            select_picture = True
-        elif user_id == session["user_id"]:
-            select_picture = False
-
-        elif photo_id == request_photo_id:
-            select_picture = False
-        else:
-            select_picture = True
-
-
-    photo_path = picture_info[0]["photo_path"]
+    # store frequently used variables
+    user_id = picture_info[0]["id"]
     photo_id = int(picture_info[0]["photo_id"])
-    old_rating = picture_info[0]["rating"]
-    username = get_username(user_id)
-    comments = show_comments(photo_id)
-    gifs = show_gifs(photo_id)
-    photo_caption = picture_info[0]["caption"]
 
-    redirect_to_feed = render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
-                                caption = photo_caption)
+
+    # store frequently used render template for feed
+    redirect_to_feed = render_template("feed.html", photo_path = picture_info[0]["photo_path"], rating = round(picture_info[0]["rating"], 1),gifs = show_gifs(photo_id),
+                                username = get_username(user_id), user_id = user_id, comments = show_comments(photo_id), photo_id = photo_id,
+                                caption = picture_info[0]["caption"])
 
     if request.method == "POST":
+        # report a persons post
         if request.form.get("report") != None:
             report(photo_id, user_id)
             return redirect_to_feed
 
+        # add to history after rating
         if request.form.get("rate") != None:
-            add_to_history(user_id, photo_id,)
-
+            add_to_history(user_id, photo_id)
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
             return redirect_to_feed
 
+        # add comments
         if request.form.get("comment") != None:
-            if not request.form.get("comment").strip(" "):
-                return apology("ingevulde comment is leeg")
-
+            # add gif as a comment
             if request.form.get("comment").startswith("/gif"):
                 query = request.form.get("comment")[len("/gif"):]
                 giphy = translate(query,api_key="OqJEhuVDXwcAVJbRre1ubPPRj2nkjMWh")
                 gif = giphy.fixed_height.downsampled.url
-                add_gif( gif, request.form.get("photo_id"), session["user_id"])
+                add_gif(gif, request.form.get("photo_id"),username)
                 return redirect_to_feed
-
+            # add a normal comment
             else:
-                add_comment(request.form.get("comment"), request.form.get("photo_id"))
-
+                add_comment(request.form.get("comment"), request.form.get("photo_id"), session["user_id"])
                 return redirect_to_feed
     else:
+        # redirect to feed when GET
         return redirect_to_feed
 
 @app.route("/search", methods = ["GET", "POST"])
 @login_required
 def search():
-
     username = request.form.get("search_username")
-    if request.method == "POST":
-        if not username:
-            return apology("Must provide a username to search!")
 
+    if request.method == "POST":
         user = search_user(username)
         user_id = user[0]["id"]
 
+        # give apology when user doesnt exist
         if len(user) == 0:
             return apology("User does not exist!")
 
-
+        # split followers and following from lists in list
         followers_following = following_follower(user_id)
         following = followers_following[0]
         followers = followers_following[1]
 
-        picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)
-
+        # go to your_userpage when you type own name
         if user_id == session["user_id"]:
-            return render_template("your_userpage.html", user_id = session["user_id"], username = username,
-                            following_amount = len(followers), follower_amount = len(following),
-                            picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
+            return redirect(url_for("your_userpage"))
 
-
+        # go to the chosen userpage
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info, profile_pic = profile_pic,post_amount = len(picture_info))
+                                picture_info = get_pictures(user_id), profile_pic = select_profile_pic(user_id),post_amount = len(picture_info))
 
     else:
+        # redirect to search when GET
         return render_template("search.html")
 
-#@app.route('/hot', methods=['GET', 'POST'])
-#@login_required
-#def featured():
-#    if request.method == "POST":
-#        leaderboard = featured_photos()
-#        return render_template("hot.html", leaderboard = leaderboard)
-#    else:
-#        return render_template("hot.html")
 
 @app.route("/change_password", methods=["GET", "POST"])
 @login_required
-def change_password():
+def password_change():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        change_password()
-        return render_template("feed.html")
+        change_password(request.form.get("current_password"), request.form.get("new_password"),  request.form.get("new_password_again"))
+        return redirect(url_for("your_userpage"))
     else:
-        return render_template("change_password.html")
+        return render_template("password_change.html")
+
+
+@app.route("/hot")
+@login_required
+def hot():
+    leaderboard = featured_photos()
+    return render_template("hot.html", leaderboard = leaderboard)
+
+

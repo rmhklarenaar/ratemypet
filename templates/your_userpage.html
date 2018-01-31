@@ -10,20 +10,24 @@
     <form action="{{ url_for('upload_profile_picture') }}" method="get">
         <button class="button" type="submit" name="change" value = "yes">Change Profile Picture</button>
     </form>
-    <form action="{{ url_for('change_password') }}" method="get">
-        <button class="button" type="submit" name="change" value = "yes">Change Password</button>
+    <form action="{{ url_for('password_change') }}" method="get">
+        <button class="button" type="submit" name="change_password" value = "yes">Change Password</button>
     </form>
     <br/>
     <p>Posts: <strong>{{post_amount}}&nbsp;</strong>Followers: <strong>{{follower_amount}}&nbsp;</strong>Following: <strong>{{following_amount}}</strong></p>
     <br/>
         {% for picture in picture_info%}
             <tr>
-                <td><h2>{{caption}}</h2></td>
+                <td><h2>{{picture.caption}}</h2></td>
                 <td><img class="post" src="{{picture.photo_path}}"/></td>
-                <td><p class="rating2">Rating: {{'%0.1f'% picture.rating|float}}</p></td>
+                {% if picture.rating == 0 %}
+                    <td><p> Not rated yet</p></td>
+                {% else %}
+                    <td><p class="rating2">Rating: {{'%0.1f'% picture.rating|float}}</p></td>
+                {% endif %}
                 <form action="{{ url_for('your_userpage') }}" method="post">
                     <input type="submit" class="button" name="delete" value="Delete this photo" method="post"></input>
-                    <input type="hidden" name="photo_id" value={picture.photo_id}}>
+                    <input type="hidden" name="delete_photo" value={{picture.photo_id}}>
                 </form>
             </tr>
         {% endfor%}

@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block main %}
+<<<<<<< HEAD
     <h1>✯{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" class="profilepic"/>
+=======
+
+    <h1>✯{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+>>>>>>> 57c5990f32f83a66bbe4ea0514ab685f4365fe0f
     <br/>
     <form action="{{ url_for('userpage') }}" method="post">
         <input type="hidden" name="user_id" value={{user_id}}>

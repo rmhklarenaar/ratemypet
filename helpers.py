@@ -164,12 +164,13 @@ def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
     return apology("Pagina is nog niet af!")
 
-def search_user():
-    user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
+
+def search_user(username):
+    user = db.execute("SELECT * FROM users WHERE username = :username", username = username)
     return user
 
 def upload_photo(photo_path, caption):
-    photo_path = photo_path
+
     add_photo = db.execute("INSERT INTO photo(id, photo_path, caption) VALUES(:id, :photo_path, :caption)", id = session["user_id"] , photo_path = photo_path, caption = caption)
     return add_photo
 
@@ -212,6 +213,38 @@ def total_photos():
     total = db.execute("SELECT photo_id FROM photo")
     return len(total)
 
+def change_password():
+
+    rows = db.execute("SELECT * FROM users WHERE id = :id",  id = session["user_id"])
+    # ensure all fields are filled in
+    if not request.form.get("current_password"):
+        return apology("must provide your current password")
+
+    elif not request.form.get("new_password"):
+        return apology("must provide a new password")
+
+    elif not request.form.get("new_password_again"):
+        return apology("must re-enter new password")
+
+    # ensure the passwords match
+    elif request.form.get("new_password_again") != request.form.get("new_password"):
+        return apology("passwords do not match")
+
+    # ensure the old password was correct
+    elif not pwd_context.verify(request.form.get("current_password"), rows[0]["hash"]):
+        return apology("current password is not correct")
+
+    # ensure the user creates a new password
+    elif request.form.get("new_password") == request.form.get("current_password"):
+        return apology("must provide a password that is diffrent from your current password")
+
+    # update users password
+    hash = pwd_context.hash(request.form.get("new_password"))
+    db.execute("UPDATE users SET hash = :hash WHERE id = :id",id= session["user_id"], hash = hash)
+
+    # let the user know the password is changed
+    return render_template("feed.html")
+
 def delete_picture(photo_id):
     db.execute("DELETE FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
 
@@ -231,3 +264,4 @@ def report(photo_id, user_id):
     else:
         new_user_reports = user_report_count + 1
         db.execute("UPDATE users SET reports = :reports WHERE id = :user_id", reports = new_user_reports, user_id = user_id)
+

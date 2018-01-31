@@ -169,6 +169,7 @@ def userpage():
     else:
         return render_template("userpage.html", users_id = user_id, username = username)
 
+
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
@@ -177,13 +178,11 @@ def upload():
     app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
     configure_uploads(app, photos)
 
-    print("VOOR DE IF STATEMENT")
-    print(request.files)
-    if request.method == 'POST' and 'photo' in request.files and request.form.get("caption") != None:
-        print("IN DE IF STATEMENT")
+    if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
         photo_path = "/static/uploads/" + filename
-        upload_photo(photo_path, request.form.get("caption") != None)
+        caption = request.form.get("caption")
+        upload_photo(photo_path, caption)
 
     return render_template('upload.html')
 
@@ -202,8 +201,6 @@ def upload_profile_picture():
             return render_template("upload_profile_picture.html")
         except:
             return apology("Must submit a file!")
-
-        #return redirect(url_for("your_userpage")
 
 
     else:
@@ -229,6 +226,7 @@ def feed():
             return apology ("all out of photo's")
         elif history_check(photo_id) != 0:
             select_picture = False
+
         elif request.form.get("check_comment") == "True":
             picture_info = get_picture_info(request.form.get("photo_id"))
             user_id = picture_info[0]["id"]
@@ -261,6 +259,8 @@ def feed():
             return redirect_to_feed
 
         if request.form.get("rate") != None:
+            add_to_history(user_id, photo_id,)
+
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
             return redirect_to_feed
@@ -289,11 +289,15 @@ def search():
 
     username = request.form.get("search_username")
     if request.method == "POST":
-        user = search_user()
+        if not username:
+            return apology("Must provide a username to search!")
+
+        user = search_user(username)
         user_id = user[0]["id"]
 
         if len(user) == 0:
             return apology("User does not exist!")
+
 
         followers_following = following_follower(user_id)
         following = followers_following[0]
@@ -301,6 +305,12 @@ def search():
 
         picture_info = get_pictures(user_id)
         profile_pic = select_profile_pic(user_id)
+
+        if user_id == session["user_id"]:
+            return render_template("your_userpage.html", user_id = session["user_id"], username = username,
+                            following_amount = len(followers), follower_amount = len(following),
+                            picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
+
 
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
@@ -317,3 +327,13 @@ def search():
 #        return render_template("hot.html", leaderboard = leaderboard)
 #    else:
 #        return render_template("hot.html")
+
+@app.route("/change_password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        change_password()
+        return render_template("feed.html")
+    else:
+        return render_template("change_password.html")

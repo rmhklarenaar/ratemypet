@@ -1,4 +1,3 @@
-from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
@@ -8,7 +7,6 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 from giphypop import translate, upload
 import os
 
-"GEEN IDEE WAT DIT STUK HIERONDER DOET (BEGIN)"
 # configure application
 app = Flask(__name__)
 
@@ -27,10 +25,6 @@ app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
-
-# configure CS50 Library to use SQLite database
-db = SQL("sqlite:///database.db")
-"GEEN IDEE WAT DIT STUK HIERONDER DOET (EINDE)"
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -124,8 +118,9 @@ def your_userpage():
     picture_info = get_pictures(user_id)
     profile_pic = select_profile_pic(user_id)
 
-    if request.form.get("photo_id") != None:
-        delete_picture(request.form.get("photo_id"))
+    if request.form.get("delete_photo") != None:
+        delete_picture(request.form.get("delete_photo"))
+        return redirect(url_for("your_userpage"))
 
     if request.form.get("reset") != None:
         reset_history(user_id)
@@ -209,49 +204,16 @@ def upload_profile_picture():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def feed():
-    request_photo_id = 0
-    if(request.form.get("photo_id") != None):
-        request_photo_id = int(request.form.get("photo_id"))
+    picture_info = get_right_picture(request.form.get("photo_id"), request.form.get("rate"), request.form.get("check_comment"))
+    if picture_info == "apology":
+        return apology ("all out of photo's")
 
-    select_picture = False
-    while(select_picture == False):
-        picture_info = picture()
-        user_id = picture_info[0]["id"]
-        photo_id = int(picture_info[0]["photo_id"])
-
-        if request.form.get("rate") != None:
-            add_to_history(user_id, photo_id)
-
-        if none_left() == 1:
-            return apology ("all out of photo's")
-        elif history_check(photo_id) != 0:
-            select_picture = False
-
-        elif request.form.get("check_comment") == "True":
-            picture_info = get_picture_info(request.form.get("photo_id"))
-            user_id = picture_info[0]["id"]
-            photo_id = int(picture_info[0]["photo_id"])
-            select_picture = True
-        elif user_id == session["user_id"]:
-            select_picture = False
-
-        elif photo_id == request_photo_id:
-            select_picture = False
-        else:
-            select_picture = True
-
-
-    photo_path = picture_info[0]["photo_path"]
+    user_id = picture_info[0]["id"]
     photo_id = int(picture_info[0]["photo_id"])
-    old_rating = picture_info[0]["rating"]
-    username = get_username(user_id)
-    comments = show_comments(photo_id)
-    gifs = show_gifs(photo_id)
-    photo_caption = picture_info[0]["caption"]
 
-    redirect_to_feed = render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
-                                caption = photo_caption)
+    redirect_to_feed = render_template("feed.html", photo_path = picture_info[0]["photo_path"], rating = round(picture_info[0]["rating"], 1),gifs = show_gifs(photo_id),
+                                username = get_username(user_id), user_id = user_id, comments = show_comments(photo_id), photo_id = photo_id,
+                                caption = picture_info[0]["caption"])
 
     if request.method == "POST":
         if request.form.get("report") != None:
@@ -259,7 +221,7 @@ def feed():
             return redirect_to_feed
 
         if request.form.get("rate") != None:
-            add_to_history(user_id, photo_id,)
+            add_to_history(user_id, photo_id)
 
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
@@ -277,7 +239,8 @@ def feed():
                 return redirect_to_feed
 
             else:
-                add_comment(request.form.get("comment"), request.form.get("photo_id"), usernames)
+                add_comment(request.form.get("comment"), request.form.get("photo_id"), username)
+
 
                 return redirect_to_feed
     else:
@@ -330,6 +293,7 @@ def change_password():
     else:
         return render_template("change_password.html")
 
+
 @app.route("/hottest", methods = ["GET", "POST"])
 @login_required
 def featured():
@@ -338,4 +302,5 @@ def featured():
         return render_template("hottest.html", leaderboard = leaderboard)
     else:
         return render_template("hottes.html")
+
 

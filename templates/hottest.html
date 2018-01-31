@@ -10,8 +10,8 @@
     {% for picture in leaderboard%}
         <tr>
             <td><h2>{{caption}}</h2></td>
-            <td><img src="{{picture.photo_path}}" style="height: 400px;"/></td>
-            <td><p style="color: black; font-size:30px; ">{{rating}}</p></td>
+            <td><img class="post" src="{{picture.photo_path}}"/></td>
+            <td><p>{{rating}}</p></td>
         </tr>
     {% endfor%}
     <form action="{{ url_for('hottest') }}" method="post">

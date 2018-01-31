@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <h1>✯{{username}}</h1> <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <h1>✯{{username}}</h1> <img src="{{profile_pic}}" alt="profile picture" class="profilepic"/>
     <br/>
     <form action="{{ url_for('upload_profile_picture') }}" method="get">
         <button class="button" type="submit" name="change" value = "yes">Change Profile Picture</button>
@@ -15,12 +15,18 @@
     <br/>
         {% for picture in picture_info%}
             <tr>
-                <td><h2>{{caption}}</h2></td>
+<<<<<<< HEAD
+                <td><h2>{{picture.caption}}</h2></td>
                 <td><img src="{{picture.photo_path}}"/></td>
                 <td><p style="color: black; font-size:30px; ">{{'%0.1f'% picture.rating|float}}</p></td>
+=======
+                <td><h2>{{caption}}</h2></td>
+                <td><img class="post" src="{{picture.photo_path}}"/></td>
+                <td><p>{{'%0.1f'% picture.rating|float}}</p></td>
+>>>>>>> 676ef1805b85bc9e1c3b7de5e7b5c050d84cd79e
                 <form action="{{ url_for('your_userpage') }}" method="post">
                     <input type="submit" class="button" name="delete" value="Delete this photo" method="post"></input>
-                    <input type="hidden" name="photo_id" value={picture.photo_id}}>
+                    <input type="hidden" name="delete_photo" value={{picture.photo_id}}>
                 </form>
             </tr>
         {% endfor%}

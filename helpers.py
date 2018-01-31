@@ -1,46 +1,9 @@
+from cs50 import SQL
 import csv
 import urllib.request
-import random
-from giphypop import translate, upload
+
+from flask import redirect, render_template, request, session
 from functools import wraps
-from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
-from flask_session import Session
-from passlib.apps import custom_app_context as pwd_context
-from tempfile import mkdtemp
-from helpers import *
-
-"GEEN IDEE WAT DIT STUK HIERONDER DOET (BEGIN)"
-# configure application
-app = Flask(__name__)
-
-# ensure responses aren't cached
-if app.config["DEBUG"]:
-    @app.after_request
-    def after_request(response):
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response.headers["Expires"] = 0
-        response.headers["Pragma"] = "no-cache"
-        return response
-
-@app.context_processor
-def override_url_for():
-    return dict(url_for=dated_url_for)
-
-def dated_url_for(endpoint, **values):
-    if endpoint == 'static':
-        filename = values.get('filename', None)
-        if filename:
-            file_path = os.path.join(app.root_path,
-                                     endpoint, filename)
-            values['q'] = int(os.stat(file_path).st_mtime)
-    return url_for(endpoint, **values)
-
-# configure session to use filesystem (instead of signed cookies)
-app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
 
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///database.db")
@@ -131,6 +94,34 @@ def following_follower(user_id):
 def get_pictures(user_id):
     return db.execute("SELECT * FROM photo WHERE id = :user_id", user_id = user_id)
 
+def get_right_picture(request_photo_id, rate, check_comment):
+    request_photo_id = 0
+    if request_photo_id != None:
+        request_photo_id = int(request_photo_id)
+
+    select_picture = False
+    while(select_picture == False):
+        picture_info = picture()
+        user_id = picture_info[0]["id"]
+        photo_id = int(picture_info[0]["photo_id"])
+
+        if rate != None:
+            add_to_history(user_id, photo_id)
+
+        if none_left() == 1:
+            return "apology"
+        elif history_check(photo_id) != 0:
+            select_picture = False
+
+        elif check_comment == "True":
+            return get_picture_info(request_photo_id)
+        elif user_id == session["user_id"]:
+            select_picture = False
+        elif photo_id == request_photo_id:
+            select_picture = False
+        else:
+            return picture_info
+
 def get_picture_info(photo_id):
     return db.execute("SELECT * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
 
@@ -152,14 +143,9 @@ def show_comments(photo_id):
     reversed_comments = list(reversed(comments))
     return reversed_comments
 
-def featured_photos():
-    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
-    return featured
-
-#def select_comments(picture_inf):
-    #photo = picture_inf
-    #select_comments = db.execute("SELECT * FROM comments WHERE photo_id = :photo_id", photo_id = photo)
-    #return select_comments
+#def featured_photos():
+#    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
+#    return featured
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"

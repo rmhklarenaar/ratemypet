@@ -5,10 +5,13 @@
 {% endblock %}
 
 {% block main %}
+    <h4>Please pick your username and password.</h4>
     <form action="{{url_for('register')}}" method="post">
         <input autocomplete="off" class="loginform" name="username" placeholder="Username" type="text" maxlength="20" required autofocus/>
         <input class="loginform" name="password" placeholder="Password" type="password" maxlength="30" required/>
-        <input class="loginform" name="password_check" placeholder="Password (again)" type="password" required/>
-        <button class="button" type="submit">Register</button>
+        <br/>
+        <input class="loginform" id="passwordagain" name="password_check" placeholder="Password (again)" type="password" required/>
+        <br/>
+        <button class="button" id="register" type="submit">Register</button>
     </form>
 {% endblock %}

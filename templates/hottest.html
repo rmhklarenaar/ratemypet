@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+
     <h3>Hottest Pets - Leaderboard</h3>
     {% for picture in leaderboard%}
         <tr>
@@ -13,4 +14,7 @@
             <td><p>{{rating}}</p></td>
         </tr>
     {% endfor%}
+    <form action="{{ url_for('hottest') }}" method="post">
+    <button class="button" type="submit">Refresh</button>
+    </form>
 {% endblock %}

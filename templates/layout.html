@@ -10,13 +10,13 @@
     <body>
         <nav>
             <a href="{{ url_for('feed') }}"><img src="static/logo.png" class="logo"/></a>
+
             <h1 class="title">{{self.title()}}</h1>
             <div>
                 {% if session.user_id %}
                     <ul>
                         <li><a href="{{url_for('logout')}}">Log Out</a></li>
                         <li><a href="{{url_for('search')}}">Search</a></li>
-
                         <li><a href="{{url_for('upload')}}">Upload</a></li>
                         <li><a href="{{url_for('feed')}}">Feed</a></li>
                         <li><a href="{{url_for('your_userpage')}}">My Account</a></li>

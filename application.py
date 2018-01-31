@@ -304,3 +304,11 @@ def password_change():
     else:
         return render_template("password_change.html")
 
+
+@app.route("/hot")
+@login_required
+def hot():
+    leaderboard = featured_photos()
+    return render_template("hot.html", leaderboard = leaderboard)
+
+

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    test
+{% endblock %}
+
+{% block main %}
+
+    {% for picture in leaderboard%}
+            <tr>
+                <td><h2>{{picture.caption}}</h2></td>
+                <td><img class="post" src="{{picture.photo_path}}"/></td>
+                <td><p>{{'%0.1f'% picture.rating|float}}</p></td>
+            </tr>
+        {% endfor%}
+{% endblock %}

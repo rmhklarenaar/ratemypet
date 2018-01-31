@@ -139,6 +139,7 @@ def your_userpage():
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def userpage():
+    print("00000000000000000000000000000000000000000000000000000")
     # storing variables
     user_id = request.form.get("user_id")
     username = get_username(user_id)

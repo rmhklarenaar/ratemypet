@@ -170,7 +170,7 @@ def search_user(username):
     return user
 
 def upload_photo(photo_path, caption):
-    photo_path = photo_path
+
     add_photo = db.execute("INSERT INTO photo(id, photo_path, caption) VALUES(:id, :photo_path, :caption)", id = session["user_id"] , photo_path = photo_path, caption = caption)
     return add_photo
 
@@ -212,7 +212,6 @@ def none_left():
 def total_photos():
     total = db.execute("SELECT photo_id FROM photo")
     return len(total)
-
 
 def change_password():
 

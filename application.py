@@ -164,6 +164,7 @@ def userpage():
         return render_template("userpage.html", users_id = user_id, username = username)
 
 
+
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
@@ -172,19 +173,13 @@ def upload():
     app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
     configure_uploads(app, photos)
 
-    print("VOOR DE IF STATEMENT")
-    print(request.files)
-    if request.method == 'POST' and 'photo' in request.files and request.form.get("caption") != None:
-        print("IN DE IF STATEMENT")
+    if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
         photo_path = "/static/uploads/" + filename
-        upload_photo(photo_path, request.form.get("caption") != None)
+        caption = request.form.get("caption")
+        upload_photo(photo_path, caption)
 
     return render_template('upload.html')
-
-
-
-
 
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
 @login_required
@@ -224,6 +219,7 @@ def feed():
             return apology ("all out of photo's")
         elif history_check(photo_id) != 0:
             select_picture = False
+
         elif request.form.get("check_comment") == "True":
             picture_info = get_picture_info(request.form.get("photo_id"))
             user_id = picture_info[0]["id"]
@@ -235,7 +231,6 @@ def feed():
         elif photo_id == request_photo_id:
             select_picture = False
         else:
-            add_to_history(user_id, photo_id,)
             select_picture = True
 
 
@@ -258,6 +253,8 @@ def feed():
             return render_template("userpage.html", user_id = user_id, username = user_username)
 
         if request.form.get("rate") != None:
+            add_to_history(user_id, photo_id,)
+
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
             return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
@@ -336,11 +333,8 @@ def change_password():
     else:
         return render_template("change_password.html")
 
-@app.route("/hottest", methods=["GET", "POST"])
+@app.route("/")
 @login_required
 def featured():
-    if request.method == "POST":
-        leaderboard = featured_photos()
-        return render_template("hottest.html", leaderboard = leaderboard)
-    else:
-        return render_template("hottest.html",)
+    leaderboard = featured_photos()
+    return render_template("hottest.html", leaderboard = leaderboard)

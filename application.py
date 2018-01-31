@@ -208,8 +208,6 @@ def upload_profile_picture():
         except:
             return apology("Must submit a file!")
 
-        #return redirect(url_for("your_userpage")
-
 
     else:
         return render_template("upload_profile_picture.html")

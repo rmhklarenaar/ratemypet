@@ -287,34 +287,55 @@ def feed():
 @login_required
 def search():
 
+    username = request.form.get("search_username")
     if request.method == "POST":
-        if not request.form.get("search_username"):
+        if not username:
             return apology("Must provide a username to search!")
 
-        user = search()
+        user = search_user(username)
         user_id = user[0]["id"]
-        user_username = user[0]["username"]
 
         if len(user) == 0:
             return apology("User does not exist!")
+
 
         followers_following = following_follower(user_id)
         following = followers_following[0]
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+        profile_pic = select_profile_pic(user_id)
 
-        return render_template("search.html", user_id = user_id, user_username = user_username)
+
+        if user_id == session["user_id"]:
+            return render_template("your_userpage.html", user_id = session["user_id"], username = username,
+                            following_amount = len(followers), follower_amount = len(following),
+                            picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
+
+        return render_template("userpage.html", user_id = user_id, username = username,
+                                following_amount = len(followers), follower_amount = len(following),
+                                picture_info = picture_info, profile_pic = profile_pic,post_amount = len(picture_info))
 
     else:
         return render_template("search.html")
 
-#@app.route("/hot", methods = ["GET", "POST"])
-#@login_required
-#def featured():
-#    if request.method == "POST":
-#        leaderboard = featured_photos()
-#        return render_template("hot.html", leaderboard = leaderboard)
-#    else:
-#        return render_template("hot.html")
+
+
+@app.route("/change_password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        change_password()
+        return render_template("feed.html")
+    else:
+        return render_template("change_password.html")
+
+@app.route("/hottest", methods=["GET", "POST"])
+@login_required
+def featured():
+    if request.method == "POST":
+        leaderboard = featured_photos()
+        return render_template("hottest.html", leaderboard = leaderboard)
+    else:
+        return render_template("hottest.html",)

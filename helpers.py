@@ -164,7 +164,7 @@ def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"
     return apology("Pagina is nog niet af!")
 
-def search():
+def search_user():
     user = db.execute("SELECT * FROM users WHERE username = :username", username = request.form.get("search_username"))
     return user
 

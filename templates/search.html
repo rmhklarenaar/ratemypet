@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block main %}
-    <form action="{{url_for('userpage')}}" method="post">
-        <input name="username_search" placeholder="username" type="text" required/>
+    <form action="{{url_for('search')}}" method="post">
+        <input name="search_username" placeholder="username" type="text" required/>
         <button class="button" type="submit">Search</button>
     </form>
 {% endblock %}

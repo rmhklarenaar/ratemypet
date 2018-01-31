@@ -226,6 +226,10 @@ def feed():
         picture_info = picture()
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
+
+        if request.form.get("rate") != None:
+            add_to_history(user_id, photo_id)
+
         if none_left() == 1:
             return apology ("all out of photo's")
         elif history_check(photo_id) != 0:
@@ -264,7 +268,6 @@ def feed():
         if request.form.get("rate") != None:
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
-            add_to_history(user_id, photo_id)
             return redirect_to_feed
 
         if request.form.get("comment") != None:
@@ -289,13 +292,10 @@ def feed():
 @login_required
 def search():
 
+    username = request.form.get("search_username")
     if request.method == "POST":
-        if not request.form.get("search_username"):
-            return apology("Must provide a username to search!")
-
-        user = search()
+        user = search_user()
         user_id = user[0]["id"]
-        user_username = user[0]["username"]
 
         if len(user) == 0:
             return apology("User does not exist!")
@@ -305,9 +305,11 @@ def search():
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+        profile_pic = select_profile_pic(user_id)
 
-        return render_template("search.html", user_id = user_id, user_username = user_username)
+        return render_template("userpage.html", user_id = user_id, username = username,
+                                following_amount = len(followers), follower_amount = len(following),
+                                picture_info = picture_info, profile_pic = profile_pic,post_amount = len(picture_info))
 
     else:
         return render_template("search.html")

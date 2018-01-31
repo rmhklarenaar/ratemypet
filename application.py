@@ -118,34 +118,33 @@ def logout():
 def your_userpage():
     user_id = session["user_id"]
     username = get_username(user_id)
+    followers_following = following_follower(user_id)
+    following = followers_following[0]
+    followers = followers_following[1]
+    picture_info = get_pictures(user_id)
+    profile_pic = select_profile_pic(user_id)
 
+    if request.form.get("photo_id") != None:
+        delete_picture(request.form.get("photo_id"))
 
+    if request.form.get("reset") != None:
+        reset_history(user_id)
 
-    if request.method == "POST":
-        if request.form.get("change") == "yes":
-            return render_template("upload_profile_picture.html")
-        return render_template("your_userpage.html", user_id = user_id, username = username)
+    if request.form.get("change") == "yes":
+        return render_template("upload_profile_picture.html")
 
-    else:
-         # Volgen van andere gebruiker
-        followers_following = following_follower(user_id)
-        following = followers_following[0]
-        followers = followers_following[1]
-
-        picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)
-        print(profile_pic)
-        return render_template("your_userpage.html", user_id = user_id, username = username,
-                                following_amount = len(followers), follower_amount = len(following),
-                                picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
-
-        return render_template("your_userpage.html", users_id = user_id, username = username)
+    return render_template("your_userpage.html", user_id = user_id, username = username,
+                            following_amount = len(followers), follower_amount = len(following),
+                            picture_info = picture_info,profile_pic = profile_pic, post_amount = len(picture_info))
 
 @app.route("/userpage", methods = ["GET", "POST"])
 @login_required
 def userpage():
     user_id = request.form.get("user_id")
     username = get_username(user_id)
+
+    if int(user_id) == session["user_id"]:
+        return redirect(url_for("your_userpage"))
 
     if request.method == "POST":
         # Volgen van andere gebruiker
@@ -178,10 +177,14 @@ def upload():
     app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
     configure_uploads(app, photos)
 
-    if request.method == 'POST' and 'photo' in request.files:
+    print("VOOR DE IF STATEMENT")
+    print(request.files)
+    if request.method == 'POST' and 'photo' in request.files and request.form.get("caption") != None:
+        print("IN DE IF STATEMENT")
         filename = photos.save(request.files['photo'])
         photo_path = "/static/uploads/" + filename
-        upload_photo(photo_path)
+        upload_photo(photo_path, request.form.get("caption") != None)
+
     return render_template('upload.html')
 
 @app.route("/upload_profile_picture", methods = ["GET", "POST"])
@@ -218,6 +221,10 @@ def feed():
         picture_info = picture()
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
+
+        if request.form.get("rate") != None:
+            add_to_history(user_id, photo_id)
+
         if none_left() == 1:
             return apology ("all out of photo's")
         elif history_check(photo_id) != 0:
@@ -233,7 +240,6 @@ def feed():
         elif photo_id == request_photo_id:
             select_picture = False
         else:
-            add_to_history(user_id, photo_id,)
             select_picture = True
 
 
@@ -243,51 +249,48 @@ def feed():
     username = get_username(user_id)
     comments = show_comments(photo_id)
     gifs = show_gifs(photo_id)
+    photo_caption = picture_info[0]["caption"]
 
+    redirect_to_feed = render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
+                                username = username, user_id = user_id, comments = comments, photo_id = photo_id,
+                                caption = photo_caption)
 
     if request.method == "POST":
-        if(request.form.get("go_to_user")) != None:
-            return render_template("userpage.html", user_id = user_id, username = user_username)
+        if request.form.get("report") != None:
+            report(photo_id, user_id)
+            return redirect_to_feed
 
         if request.form.get("rate") != None:
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
-            return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+            return redirect_to_feed
+
         if request.form.get("comment") != None:
             if not request.form.get("comment").strip(" "):
                 return apology("ingevulde comment is leeg")
+
             if request.form.get("comment").startswith("/gif"):
                 query = request.form.get("comment")[len("/gif"):]
-
                 giphy = translate(query,api_key="OqJEhuVDXwcAVJbRre1ubPPRj2nkjMWh")
                 gif = giphy.fixed_height.downsampled.url
-                print(gif)
-                add_gif( gif, request.form.get("photo_id"))
-
-                return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+                add_gif( gif, request.form.get("photo_id"), session["user_id"])
+                return redirect_to_feed
 
             else:
                 add_comment(request.form.get("comment"), request.form.get("photo_id"))
 
-                return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+                return redirect_to_feed
     else:
-        return render_template("feed.html", photo_path = photo_path, rating = round(old_rating, 1),gifs = gifs,
-                                username = username, user_id = user_id, comments = comments, photo_id = photo_id)
+        return redirect_to_feed
 
 @app.route("/search", methods = ["GET", "POST"])
 @login_required
 def search():
 
+    username = request.form.get("search_username")
     if request.method == "POST":
-        if not request.form.get("search_username"):
-            return apology("Must provide a username to search!")
-
-        user = search()
+        user = search_user()
         user_id = user[0]["id"]
-        user_username = user[0]["username"]
 
         if len(user) == 0:
             return apology("User does not exist!")
@@ -297,9 +300,11 @@ def search():
         followers = followers_following[1]
 
         picture_info = get_pictures(user_id)
-        profile_pic = select_profile_pic(user_id)[0]["photo_path"]
+        profile_pic = select_profile_pic(user_id)
 
-        return render_template("search.html", user_id = user_id, user_username = user_username)
+        return render_template("userpage.html", user_id = user_id, username = username,
+                                following_amount = len(followers), follower_amount = len(following),
+                                picture_info = picture_info, profile_pic = profile_pic,post_amount = len(picture_info))
 
     else:
         return render_template("search.html")

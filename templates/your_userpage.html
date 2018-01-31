@@ -5,23 +5,23 @@
 {% endblock %}
 
 {% block main %}
-    <h1>@{{username}}</h1> <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
+    <h1>✯{{username}}</h1> <img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
     <br/>
     <form action="{{ url_for('upload_profile_picture') }}" method="get">
-        <button class="btn btn-default" type="submit" name="change" value = "yes">Change Profile Picture</button>
+        <button class="button" type="submit" name="change" value = "yes">Change Profile Picture</button>
     </form>
     <br/>
     <p>Posts: <strong>{{post_amount}}&nbsp;</strong>Followers: <strong>{{follower_amount}}&nbsp;</strong>Following: <strong>{{following_amount}}</strong></p>
     <br/>
         {% for picture in picture_info%}
             <tr>
-                <td><h2>{{picture.caption}}</h2></td>
-                <td><img src="{{picture.photo_path}}" style="height: 400px;"/></td>
+                <td><h2>{{caption}}</h2></td>
+                <td><img src="{{picture.photo_path}}"/></td>
                 <td><p style="color: black; font-size:30px; ">{{'%0.1f'% picture.rating|float}}</p></td>
             </tr>
         {% endfor%}
 
     <form method="post" action="{{url_for('feed')}}">
-        <button class="btn btn-default" type="submit">Reset Feed History</button>
+        <button class="button" type="submit">Reset Feed History</button>
     </form>
 {% endblock %}

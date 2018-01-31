@@ -23,6 +23,19 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False

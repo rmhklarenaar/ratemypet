@@ -5,10 +5,11 @@
 {% endblock %}
 
 {% block main %}
+    <h4>Upload a photo of your pet.</h4>
     <form method="post" enctype="multipart/form-data" action="{{url_for('upload')}}">
-        <input type="file" name="photo" id="choosefile" required>
-        <br/>
         <input type="text" placeholder="caption" name="caption" id="caption" required>
+        <br/>
+        <input type="file" name="photo" class="button" id="choosefile" required>
         <input type="submit" class="button" id="uploadbutton">
     </form>
 {% endblock %}

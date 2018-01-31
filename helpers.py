@@ -198,3 +198,17 @@ def none_left():
 def total_photos():
     total = db.execute("SELECT photo_id FROM photo")
     return len(total)
+
+def report(photo_id, user_id):
+    report_count = db.execute("SELECT reports FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+    if report_count == 4:
+        db.execute("DELETE * FROM photo WHERE photo_id = :photo_id", photo_id = photo_id)
+    else:
+        db.execute("UPDATE photo SET reports = :reports WHERE photo_id = :photo_id", reports = report_count + 1, photo_id = photo_id)
+
+    user_report_count = db.execute("SELECT reports FROM users WHERE id = :user_id", user_id = user_id)
+
+    if user_report_count == 14:
+        db.execute("DELETE * FROM users WHERE id = :user_id", user_id = user_id)
+    else:
+        db.execute("UPDATE users SET reports = :reports WHERE id = :user_id", reports = user_report_count + 1, user_id = user_id)

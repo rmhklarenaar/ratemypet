@@ -172,10 +172,13 @@ def upload():
     app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
     configure_uploads(app, photos)
 
-    if request.method == 'POST' and 'photo' in request.files:
+    print("VOOR DE IF STATEMENT")
+    print(request.files)
+    if request.method == 'POST' and 'photo' in request.files and request.form.get("caption") != None:
+        print("IN DE IF STATEMENT")
         filename = photos.save(request.files['photo'])
         photo_path = "/static/uploads/" + filename
-        upload_photo(photo_path, request.form.get("caption"))
+        upload_photo(photo_path, request.form.get("caption") != None)
 
     return render_template('upload.html')
 
@@ -245,7 +248,9 @@ def feed():
     photo_caption = picture_info[0]["caption"]
 
     if request.method == "POST":
-        print(request.form.get("username"), "****************************")
+        if(request.form.get("report") != None):
+            report(photo_id, user_id)
+
         if(request.form.get("username")) != None:
             return render_template("userpage.html", user_id = get_user_id(request.form_get("username")), username = request.form.get("username"))
 

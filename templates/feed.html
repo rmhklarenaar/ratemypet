@@ -12,20 +12,20 @@
 
 <h2>{{caption}}</h2>
 
-<img src="{{photo_path}}" style="height: 400px;"/>
+<img class="post" src="{{photo_path}}"/>
 <br/>
 <br/>
 
 <form action="{{ url_for('feed') }}" method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
-    <button class="rate" type="submit" name="rate" value="1">1</button>
+    <button class="rate" type="submit" name="rate" value="1">1</button></button>
     <button class="rate" type="submit" name="rate" value="2">2</button>
     <button class="rate" type="submit" name="rate" value="3">3</button>
     <button class="rate" type="submit" name="rate" value="4">4</button>
     <button class="rate" type="submit" name="rate" value="5">5</button>
 </form>
 <br/>
-<p style="color: black; font-size:30px; ">{{rating}}</p>
+<p>{{rating}}</p>
 
 <form method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
@@ -54,7 +54,7 @@
             <input type="submit" class="button" name="username" value="{{gif.username}}" method="post"></input>
             <input type="hidden" name="user_id" value={{gif.id}}>
         </form>
-        : <img src="{{gif.photo_path}}" style="height: 200px;"/>
+        : <img class="gif" src="{{gif.photo_path}}"/>
     </td></p>
     {% endfor%}
 

@@ -142,9 +142,9 @@ def show_comments(photo_id):
     reversed_comments = list(reversed(comments))
     return reversed_comments
 
-def featured_photos():
-    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
-    return featured
+#def featured_photos():
+#    featured = db.execute("SELECT * FROM(SELECT * FROM photo ORDER BY rating DESC LIMIT 10) t ORDER BY rating ASC")
+#    return featured
 
 def report():
     "deze fucntie zorgt ervoor dat een user een andere user kan reporten"

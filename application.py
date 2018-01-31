@@ -281,6 +281,14 @@ def search():
     else:
         return render_template("search.html")
 
+#@app.route('/hot', methods=['GET', 'POST'])
+#@login_required
+#def featured():
+#    if request.method == "POST":
+#        leaderboard = featured_photos()
+#        return render_template("hot.html", leaderboard = leaderboard)
+#    else:
+#        return render_template("hot.html")
 
 @app.route("/change_password", methods=["GET", "POST"])
 @login_required
@@ -291,9 +299,3 @@ def change_password():
         return render_template("feed.html")
     else:
         return render_template("change_password.html")
-
-@app.route("/")
-@login_required
-def featured():
-    leaderboard = featured_photos()
-    return render_template("hottest.html", leaderboard = leaderboard)

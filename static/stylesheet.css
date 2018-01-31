@@ -4,6 +4,10 @@
     font-family: 'Poppins', Arial, sans-serif;
 }
 
+body {
+  background: linear-gradient(45deg, #8b9da9, #fff6e4);
+}
+
 .logo {
     height: 50px;
     margin: 5px;
@@ -89,6 +93,7 @@ input[type=password] {
 
 textarea:focus, input:focus {
     outline: none;
+    background-color: lightgray;
 }
 
 #login {
@@ -96,6 +101,20 @@ textarea:focus, input:focus {
     margin-top: -1px;
     width: 383px;
     border-radius: 0 0 15px 15px;
+}
+
+#register {
+    margin-left: -3px;
+    margin-top: -1px;
+    width: 383px;
+    border-radius: 0 0 15px 15px;
+}
+
+#passwordagain {
+    border-radius: 0;
+    width: 341px;
+    margin-left: -2px;
+    margin-top: 0;
 }
 
 .button {
@@ -129,4 +148,17 @@ textarea:focus, input:focus {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+}
+
+.post {
+    height: 400px;
+}
+
+.rate {
+    background-image: url(static/star_empty.png);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 50px;
+    width: 50px;
+    border: none;
 }

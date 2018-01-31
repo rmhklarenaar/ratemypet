@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block main %}
-
+    <h4>Enter a username to search.</h4>
     <form action="{{url_for('search')}}" method="post">
-        <input name="search_username" placeholder="username" type="text" required/>
-        <button class="button" type="submit">Search</button>
+        <input name="search_username" placeholder="username" type="text" id="searchfield" required/>
+        <button class="button" id="searchbutton" type="submit">Search</button>
 
     </form>
 {% endblock %}

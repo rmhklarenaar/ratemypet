@@ -7,10 +7,10 @@
 {% block main %}
 
 <form action="{{ url_for('userpage') }}" method="post">
-    <button class="button" type="submit" name="user_id" value={{user_id}}>{{username}}</button>
+    <button class="button" id="username" type="submit" name="user_id" value={{user_id}}>{{username}}</button>
 </form>
 
-<h2>{{caption}}</h2>
+<h2 class="photocaption">{{caption}}</h2>
 
 <img class="post" src="{{photo_path}}"/>
 <br/>
@@ -18,43 +18,39 @@
 
 <form action="{{ url_for('feed') }}" method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
-    <button class="rate" type="submit" name="rate" value="1">1</button></button>
-    <button class="rate" type="submit" name="rate" value="2">2</button>
-    <button class="rate" type="submit" name="rate" value="3">3</button>
-    <button class="rate" type="submit" name="rate" value="4">4</button>
-    <button class="rate" type="submit" name="rate" value="5">5</button>
-</form>
-<br/>
-<p>{{rating}}</p>
+    <button class="rate" id="rate" type="submit" name="rate" value="1">✭︎</button></button>
+    <button class="rate" id="rate" type="submit" name="rate" value="2">✭</button>
+    <button class="rate" id="rate" type="submit" name="rate" value="3">✭</button>
+    <button class="rate" id="rate" type="submit" name="rate" value="4">✭</button>
+    <button class="rate" id="rate" type="submit" name="rate" value="5">✭</button>
+</form><p class="rating">Rating: {{rating}}</p>
 
 <form method="post">
     <input type="hidden" name="photo_id" value={{photo_id}}>
     <input type="hidden" name="user_id" value={{user_id}}>
     <input type="hidden" name="check_comment" value=True>
-    <input type="text" name="comment" placeholder="comment" maxlength="140">
-    <button class="button" type="submit" name="comment">comment</button>
+    <input type="text" name="comment" placeholder="comment" maxlength="140" id="comment">
+    <button class="button" id="commentbutton" type="submit" name="comment">comment</button>
 </form>
 <form action="{{ url_for('feed') }}" method="post">
-    <button class="btn btn-default" type="submit" name="report" value="report">Report</button>
+    <button class="button" id="report" type="submit" name="report" value="report">Report Photo</button></button>
 </form>
 
 <tr>
     {% for comment in comments%}
     <p><td>
         <form action="{{ url_for('userpage') }}" method="post">
-            <input type="submit" class="button" name="username" value="{{comment.username}}" method="post"></input>
+            <input type="submit" class="button" name="username" value="{{comment.username}}:" method="post"></input>
             <input type="hidden" name="user_id" value={{comment.id}}>
-        </form>
-        : {{comment.comments}}
+        </form><p class="comment">"{{comment.comments}}"</p>
     </td></p>
     {% endfor%}
     {% for gif in gifs%}
     <p><td>
         <form action="{{ url_for('userpage') }}" method="post">
-            <input type="submit" class="button" name="username" value="{{gif.username}}" method="post"></input>
+            <input type="submit" class="button" name="username" value="{{gif.username}}:" method="post"></input>
             <input type="hidden" name="user_id" value={{gif.id}}>
-        </form>
-        : <img class="gif" src="{{gif.photo_path}}"/>
+        </form><img class="gif" src="{{gif.photo_path}}"/>
     </td></p>
     {% endfor%}
 

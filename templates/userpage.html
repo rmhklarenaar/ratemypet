@@ -5,21 +5,13 @@
 {% endblock %}
 
 {% block main %}
-<<<<<<< HEAD
     <h1>✯{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" class="profilepic"/>
-=======
-
-    <h1>✯{{username}}</h1><img src="{{profile_pic}}" alt="profile picture" style="height: 100px; width: 100px;"/>
->>>>>>> 57c5990f32f83a66bbe4ea0514ab685f4365fe0f
     <br/>
     <form action="{{ url_for('userpage') }}" method="post">
         <input type="hidden" name="user_id" value={{user_id}}>
-        <button class="btn btn-default" type="submit" name="follow" value = "yes">Follow</button>
-    </form>
-
-    <form action="{{ url_for('userpage') }}" method="post">
+        <button class="button" id="follow" type="submit" name="follow" value = "yes">Follow</button>
         <input type="hidden" name="user_id" value={{user_id}}>
-        <button class="btn btn-default" type="submit" name="unfollow" value = "yes">Unfollow</button>
+        <button class="button" id="unfollow" type="submit" name="unfollow" value = "yes">Unfollow</button>
     </form>
 
     <br/>
@@ -29,7 +21,7 @@
             <tr>
                 <td><h2>{{caption}}</h2></td>
                 <td><img class="post" src="{{picture.photo_path}}"/></td>
-                <td><p>{{'%0.1f'% picture.rating|float}}</p></td>
+                <td><p class="rating2">Rating: {{'%0.1f'% picture.rating|float}}</p></td>
             </tr>
         {% endfor%}
 

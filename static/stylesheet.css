@@ -5,7 +5,8 @@
 }
 
 body {
-  background: linear-gradient(45deg, #8b9da9, #fff6e4);
+  background: gradient(45deg, #8b9da9, #fff6e4);
+  min-width: 950px;
 }
 
 .logo {
@@ -64,6 +65,7 @@ nav {
     border: 0.5px solid black;
     border-radius: 5px;
     background-color: #333333;
+    min-width: 950px;
 }
 
 .container {
@@ -126,6 +128,7 @@ textarea:focus, input:focus {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    border-radius: 15px;
 }
 
 .button:hover {
@@ -150,15 +153,137 @@ textarea:focus, input:focus {
     font-size: 16px;
 }
 
+#username {
+    position: absolute;
+    left: 5px;
+    top: -20px;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.photocaption {
+    text-align: right;
+    position: absolute;
+    right: 6px;
+    top: -35px;
+    width: 250px;
+    height: 250px;
+    overflow: auto;
+    text-transform: capitalize;
+    font-size: 20px;
+}
+
+.profilepic {
+    height: 100px;
+}
+
 .post {
-    height: 400px;
+    height: 350px;
+    margin-top: -18px;
+
 }
 
 .rate {
-    background-image: url(static/star_empty.png);
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    height: 50px;
-    width: 50px;
+    margin: -6px;
+    margin-top: -30px;
+    font-size: 80px;
+    color: black;
     border: none;
+    background-color: white;
+}
+.rate:hover ~ #rate {
+    color: red;
+    flex-direction: row-reverse;
+}
+
+.rating {
+    position: absolute;
+    left: 6px;
+    top: 10px;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+#comment {
+    border-radius: 15px 0px 0px 15px;
+    height: 13px;
+    margin-right: -7px;
+    margin-top: 0px;
+}
+
+.comment {
+    border-bottom: 1px solid #333333;
+    max-width: 300px;
+    margin: auto;
+    margin-top: 10px;
+}
+
+#commentbutton {
+    margin-top: 2px;
+    border-radius: 0px 15px 15px 0px;
+}
+
+#report {
+    position: absolute;
+    top: 285px;
+    left: 6px;
+    font-size: 10px;
+}
+
+#formtop {
+    border-radius: 15px 15px 0 0;
+}
+
+#formmid {
+    margin-top: 2px;
+    border-radius: 0;
+}
+
+#formbottom {
+    margin-top: 2px;
+    margin-left: -4px;
+    width: 192px;
+    border-radius: 0 0 15px 15px;
+}
+
+#choosefile {
+}
+
+#caption {
+    height: 13px;
+    border-radius: 0;
+    margin-left: -5px;
+    margin-top: -2px;
+}
+
+#uploadbutton {
+    margin-top: 3px;
+    margin-left: -2px;
+}
+
+#follow {
+    border-radius: 15px 0px 0px 15px;
+    border-right: 1px solid white;
+}
+
+#unfollow {
+    margin-left: -6px;
+    border-radius: 0px 15px 15px 0px;
+}
+
+.rating2 {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+#searchfield {
+    border-radius: 15px 0px 0px 15px;
+    height: 13px;
+    margin-top: 0px;
+}
+
+#searchbutton {
+    border-radius: 0px 15px 15px 0px;
+    margin-left: -2px;
+    margin-top: 0px;
 }

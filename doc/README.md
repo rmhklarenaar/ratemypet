@@ -8,6 +8,13 @@ Ruben Klarenaar
 
 "ratemypet.nl"
 
+# LET OP!!
+> Om RateMyPet goed te laten werken zijn voor "upload" en de "giphy api" twee extra installaties nodig in de CS50 IDE omgeving. Om deze modules te installeren moeten in de terminal de volgende commands uitgevoerd worden:
+$
+$ pip install Flask-Uploads
+$ pip install requests giphypop
+$
+
 ## Samenvatting
 > Het project zal bestaan uit een website / social-media waarop mensen foto’s van hun huisdier kunnen plaatsen en foto’s van anderen kunnen raten. Het is ook mogelijk om comments plaatsen, in deze comments kunnen gif’s worden gebruikt met de Giphy API.
 Ook komt er een ranking met “Hottest of the week” en “Nottest of the week”, een pagina waarop de hoogst ge-rated post naast de laagst ge-rated post van de week staan. De site krijgt is gebaseerd op tinder, er staat steeds maar 1 post op de pagina. Wanneer je de foto rate gaat hij weg en komt er een nieuwe voor in de plaats.

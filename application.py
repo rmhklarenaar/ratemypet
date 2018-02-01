@@ -256,7 +256,7 @@ def feed():
                 query = request.form.get("comment")[len("/gif"):]
                 giphy = translate(query,api_key="OqJEhuVDXwcAVJbRre1ubPPRj2nkjMWh")
                 gif = giphy.fixed_height.downsampled.url
-                add_gif(gif, request.form.get("photo_id"),username)
+                add_gif(gif, request.form.get("photo_id"), session["user_id"])
                 return redirect_to_feed
             # add a normal comment
             else:
@@ -291,7 +291,7 @@ def search():
         # go to the chosen userpage
         return render_template("userpage.html", user_id = user_id, username = username,
                                 following_amount = len(followers), follower_amount = len(following),
-                                picture_info = get_pictures(user_id), profile_pic = select_profile_pic(user_id),post_amount = len(picture_info))
+                                picture_info = get_pictures(user_id), profile_pic = select_profile_pic(user_id),post_amount = len(get_pictures(user_id)))
 
     else:
         # redirect to search when GET

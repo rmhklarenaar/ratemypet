@@ -5,15 +5,14 @@
 {% endblock %}
 
 {% block main %}
-
     {% for picture in leaderboard%}
             <tr>
                 <td><h2>{{picture.caption}}</h2></td>
                 <td><img class="post" src="{{picture.photo_path}}"/></td>
                 {% if picture.rating == 0 %}
-                    <td><p> Not rated yet</p></td>
+                    <td><p>Not yet rated</p></td>
                 {% else %}
-                    <td><p>{{'%0.1f'% picture.rating|float}}</p></td>
+                    <td><p>Rating: {{'%0.1f'% picture.rating|float}}</p></td>
                 {% endif %}
             </tr>
         {% endfor%}

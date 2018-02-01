@@ -10,10 +10,10 @@ Ruben Klarenaar
 
 # LET OP!!
 > Om RateMyPet goed te laten werken zijn voor "upload" en de "giphy api" twee extra installaties nodig in de CS50 IDE omgeving. Om deze modules te installeren moeten in de terminal de volgende commands uitgevoerd worden:
-$
+
 $ pip install Flask-Uploads
+
 $ pip install requests giphypop
-$
 
 ## Samenvatting
 > Het project zal bestaan uit een website / social-media waarop mensen foto’s van hun huisdier kunnen plaatsen en foto’s van anderen kunnen raten. Het is ook mogelijk om comments plaatsen, in deze comments kunnen gif’s worden gebruikt met de Giphy API.

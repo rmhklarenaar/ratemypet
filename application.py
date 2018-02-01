@@ -214,6 +214,10 @@ def upload_profile_picture():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def feed():
+    # if the picture is rated, add it to the history
+    if rate != None:
+        add_to_history(request.form.get("photo_id"))
+
     # get a picture that's unique and not from yourself
     picture_info = get_right_picture(request.form.get("photo_id"), request.form.get("rate"), request.form.get("check_comment"))
     if picture_info == "comment":
@@ -241,7 +245,6 @@ def feed():
 
         # add to history after rating
         if request.form.get("rate") != None:
-            add_to_history(user_id, photo_id)
             rating = int(request.form.get("rate"))
             rate(rating, request.form.get("photo_id"))
             return redirect_to_feed
@@ -309,6 +312,7 @@ def password_change():
 @app.route("/hot")
 @login_required
 def hot():
+    # redirect to the hot page
     leaderboard = featured_photos()
     return render_template("hot.html", leaderboard = leaderboard)
 

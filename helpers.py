@@ -128,10 +128,6 @@ def get_right_picture(request_photo_id, rate, check_comment):
         user_id = picture_info[0]["id"]
         photo_id = int(picture_info[0]["photo_id"])
 
-        # if the picture is rated, add it to the history
-        if rate != None:
-            add_to_history(user_id, photo_id)
-
         # check if there are pictures left to rate
         if none_left() == 1:
             return "apology"
@@ -212,9 +208,9 @@ def reset_history(id):
     # reset feed history so you can rate pictures again
     db.execute("DELETE FROM history WHERE id = :id", id = id)
 
-def add_to_history(photo_id, user_id):
+def add_to_history(photo_id):
     # add a rating to history so you cant rate picture more then once
-    db.execute("INSERT INTO history(user_id,id,photo_id) VALUES(:user_id,:id,:photo_id)", id = session["user_id"], user_id = user_id, photo_id = photo_id)
+    db.execute("INSERT INTO history(id,photo_id) VALUES(:id,:photo_id)", id = session["user_id"], photo_id = photo_id)
 
 def history_check(photo_id):
     # check if you already seen a picture
@@ -239,15 +235,10 @@ def total_photos():
 def change_password(current_password, new_password, new_password_again):
 
     rows = db.execute("SELECT * FROM users WHERE id = :id",  id = session["user_id"])
-    # ensure all fields are filled in
-    if not current_password:
-        return apology("must provide your current password")
 
-    elif not new_password:
+    # check if password is not the smame
+    if not new_password:
         return apology("must provide a new password")
-
-    elif not new_password_again:
-        return apology("must re-enter new password")
 
     # ensure the passwords match
     elif new_password_again != new_password:

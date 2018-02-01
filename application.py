@@ -303,8 +303,16 @@ def search():
 def password_change():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        change_password(request.form.get("current_password"), request.form.get("new_password"),  request.form.get("new_password_again"))
-        return redirect(url_for("your_userpage"))
+        change = change_password(request.form.get("current_password"), request.form.get("new_password"),  request.form.get("new_password_again"))
+        # check if passwords match
+        if change == 1:
+            return apology("passwords do not match")
+        if change == 2:
+            return apology("current password is not correct")
+        if change == 3:
+            return apology("new password is same als old")
+        else:
+            return redirect(url_for("your_userpage"))
     else:
         return render_template("password_change.html")
 

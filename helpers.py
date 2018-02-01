@@ -235,22 +235,17 @@ def total_photos():
 def change_password(current_password, new_password, new_password_again):
 
     rows = db.execute("SELECT * FROM users WHERE id = :id",  id = session["user_id"])
-
-    # check if password is not the smame
-    if not new_password:
-        return apology("must provide a new password")
-
-    # ensure the passwords match
-    elif new_password_again != new_password:
-        return apology("passwords do not match")
+    # check if password is the same
+    if new_password_again != new_password:
+        return 1
 
     # ensure the old password was correct
     elif not pwd_context.verify(current_password, rows[0]["hash"]):
-        return apology("current password is not correct")
+        return 2
 
     # ensure the user creates a new password
     elif new_password == current_password:
-        return apology("must provide a password that is diffrent from your current password")
+        return 3
 
     # update users password
     hash = pwd_context.hash(new_password)

@@ -1,5 +1,0 @@
-
-This is a command for adding extra modules to Flask and your workspace:
-
-$ pip install Flask-Uploads
-$ pip install requests giphypop
